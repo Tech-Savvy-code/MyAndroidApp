@@ -6,4 +6,23 @@
     </style>
 
     <style name="Theme.TusomeApp" parent="Base.Theme.TusomeApp" />
+    <style name="ShapeAppearanceOverlay.RoundedCorners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+<!-- Add this style definition -->
+<style name="RoundedTextInputLayout" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">16dp</item>
+</style>
+
+<!-- Your existing styles -->
+<style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <!-- Your theme attributes -->
+</style>
+    <style name="TextInputLayoutRounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
 </resources>

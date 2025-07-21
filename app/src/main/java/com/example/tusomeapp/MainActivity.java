@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         // Skip button click listener
         skipButton.setOnClickListener(v -> {
 
-            Intent intent = new Intent(MainActivity.this, MainActivity.class); // Replace with your target activity
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class); // Replace with your target activity
             startActivity(intent);
             finish(); // Close the splash screen
         });
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Navigate to the next page after 3 seconds
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(MainActivity.this, MainActivity.class); // Replace with your target activity
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class); // Replace with your target activity
             startActivity(intent);
             finish(); // Close the splash screen
         }, 3000); // 3 seconds delay

@@ -40,7 +40,14 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }
 dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
+}
+dependencies {
+    implementation("com.google.android.material:material:1.9.0")  // Use latest version
+}
+dependencies {
+    implementation("androidx.compose.material:material-icons-extended:1.5.4") // Or latest version
 }
