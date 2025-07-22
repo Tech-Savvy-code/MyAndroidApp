@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 public class CircularProgressBar extends View {
     private Paint paint;
     private float progress = 0;
-
     public CircularProgressBar(Context context) {
         super(context);
         init();

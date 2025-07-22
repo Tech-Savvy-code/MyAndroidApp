@@ -51,3 +51,9 @@ dependencies {
 dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.5.4") // Or latest version
 }
+dependencies {
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.navigation:navigation-fragment:2.6.0")
+    implementation("androidx.navigation:navigation-ui:2.6.0")
+}
