@@ -1,13 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Home Fragment"
-        android:textSize="24sp"/>
-</FrameLayout>
+        android:orientation="vertical">
+
+        <!-- Welcome Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/card_background"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvWelcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Welcome, User!"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ready to start your learning session?"
+                android:textSize="14sp"
+                android:textColor="@color/gray"/>
+        </LinearLayout>
+
+        <!-- Create Session Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Create a Session"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Start a new learning session and share the code with your partner"
+                    android:textSize="14sp"
+                    android:textColor="@color/gray"
+                    android:layout_marginBottom="16dp"/>
+
+                <Button
+                    android:id="@+id/btnCreateSession"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Create Session"
+                    android:backgroundTint="@color/primary_color"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Join Session Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Join a Session"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enter a session code to join your partner's learning session"
+                    android:textSize="14sp"
+                    android:textColor="@color/gray"
+                    android:layout_marginBottom="12dp"/>
+
+                <EditText
+                    android:id="@+id/etSessionCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Enter session code"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:background="@drawable/edit_text_background"
+                    android:layout_marginBottom="12dp"/>
+
+                <Button
+                    android:id="@+id/btnJoinSession"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Join Session"
+                    android:backgroundTint="@color/primary_color"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Session Status Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSessionStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Session Status"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:id="@+id/tvSessionCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Session Code: -"
+                    android:textSize="16sp"
+                    android:textColor="@color/gray"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvConnectionStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Status: Not connected"
+                    android:textSize="16sp"
+                    android:textColor="@color/red"
+                    android:layout_marginBottom="16dp"/>
+
+                <Button
+                    android:id="@+id/btnStartCall"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Start Call"
+                    android:backgroundTint="@color/green"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</ScrollView>
