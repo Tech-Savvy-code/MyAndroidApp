@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import java.util.Random;
 
 public class HomeFragment extends Fragment {
@@ -66,6 +67,7 @@ public class HomeFragment extends Fragment {
         // Save session code to preferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("session_code", currentSessionCode);
+        editor.putBoolean("is_connected", false); // Not connected yet
         editor.apply();
 
         // Simulate connection after a delay (for demo purposes)
@@ -84,6 +86,13 @@ public class HomeFragment extends Fragment {
         }
 
         currentSessionCode = inputCode;
+
+        // Save session code to preferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("session_code", currentSessionCode);
+        editor.putBoolean("is_connected", false); // Not connected yet
+        editor.apply();
+
         simulateConnection(false);
     }
 
@@ -103,6 +112,14 @@ public class HomeFragment extends Fragment {
         btnJoinSession.setVisibility(View.GONE);
         etSessionCode.setVisibility(View.GONE);
 
+        // Update shared preferences with connection status
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("is_connected", true);
+        editor.apply();
+
+        // Notify SessionsFragment about the active session
+        notifySessionsFragment(currentSessionCode, isHost);
+
         Toast.makeText(getContext(), "Successfully connected!", Toast.LENGTH_SHORT).show();
     }
 
@@ -114,5 +131,58 @@ public class HomeFragment extends Fragment {
         // Intent intent = new Intent(getActivity(), CallActivity.class);
         // intent.putExtra("SESSION_CODE", currentSessionCode);
         // startActivity(intent);
+    }
+
+    // Method to notify SessionsFragment about the active session
+    private void notifySessionsFragment(String sessionCode, boolean isHost) {
+        try {
+            // Get the FragmentManager
+            FragmentManager fragmentManager = getParentFragmentManager();
+
+            // Try to find the SessionsFragment
+            Fragment sessionsFragment = fragmentManager.findFragmentByTag("android:switcher:" + R.id.viewPager + ":1");
+
+            // If we found the SessionsFragment and it's an instance of our class
+            if (sessionsFragment != null && sessionsFragment instanceof SessionsFragment) {
+                ((SessionsFragment) sessionsFragment).setActiveSession(sessionCode, isHost);
+            } else {
+                // Alternative approach: use FragmentManager to find by ID
+                sessionsFragment = fragmentManager.findFragmentById(R.id.viewPager);
+                if (sessionsFragment != null && sessionsFragment instanceof SessionsFragment) {
+                    ((SessionsFragment) sessionsFragment).setActiveSession(sessionCode, isHost);
+                }
+            }
+        } catch (Exception e) {
+            // Handle any exceptions (fragment might not be initialized yet)
+            Toast.makeText(getContext(), "Could not update sessions tab", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Check if we have an active session when fragment resumes
+        checkActiveSession();
+    }
+
+    private void checkActiveSession() {
+        String sessionCode = sharedPreferences.getString("session_code", "");
+        boolean isConnected = sharedPreferences.getBoolean("is_connected", false);
+
+        if (!sessionCode.isEmpty() && isConnected) {
+            currentSessionCode = sessionCode;
+
+            // Update UI to show active session
+            cardSessionStatus.setVisibility(View.VISIBLE);
+            tvSessionCode.setText("Session Code: " + sessionCode);
+            tvConnectionStatus.setText("Status: Connected");
+            tvConnectionStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+            btnStartCall.setVisibility(View.VISIBLE);
+
+            // Hide create/join buttons
+            btnCreateSession.setVisibility(View.GONE);
+            btnJoinSession.setVisibility(View.GONE);
+            etSessionCode.setVisibility(View.GONE);
+        }
     }
 }
