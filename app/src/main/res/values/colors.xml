@@ -10,5 +10,6 @@
     <!-- Add below your existing colors -->
     <color name="red">#F44336</color>       <!-- Material Red 500 -->
     <color name="green">#4CAF50</color>     <!-- Material Green 500 -->
-
+    <color name="dark_gray">#1A1A1A</color>
+    <color name="blue">#4285F4</color>
 </resources>

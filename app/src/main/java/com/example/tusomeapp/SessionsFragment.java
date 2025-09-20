@@ -4,62 +4,63 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
 public class SessionsFragment extends Fragment {
 
-    private CardView cardActiveSession;
-    private TextView tvSessionCode, tvConnectionStatus, tvNoActiveSession, tvNoHistory;
-    private Button btnStartVideoCall, btnStartAudioCall, btnScreenShare, btnRecordSession, btnEndSession;
-    private RecyclerView rvSessionHistory;
+    private TextView tvSessionCode, tvCallStatus, tvRecordingStatus;
+    private ImageButton btnMic, btnCamera, btnScreenShare, btnRecord, btnEndCall;
+    private FrameLayout videoContainer; // Changed from LinearLayout to FrameLayout
+    private LinearLayout placeholderLayout, callStatusBar;
 
     private String currentSessionCode = "";
-    private boolean isConnected = false;
-    private boolean isCallActive = false;
+    private boolean isMicOn = true;
+    private boolean isCameraOn = true; 
+    private boolean isScreenSharing = false;
     private boolean isRecording = false;
-    private boolean isScreenSharing = false; // Added missing variable
+    private boolean isCallActive = false;
     private SharedPreferences sharedPreferences;
+    private CountDownTimer callTimer;
+    private long callDuration = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sessions, container, false);
 
-        // Initialize views - FIXED ID NAMES to match your XML
-        cardActiveSession = view.findViewById(R.id.cardActiveSession);
+        // Initialize views
         tvSessionCode = view.findViewById(R.id.tvSessionCode);
-        tvConnectionStatus = view.findViewById(R.id.tvConnectionStatus);
-        tvNoActiveSession = view.findViewById(R.id.tvNoActiveSession);
-        tvNoHistory = view.findViewById(R.id.tvNoHistory);
-        btnStartVideoCall = view.findViewById(R.id.btnStartVideoCall);
-        btnStartAudioCall = view.findViewById(R.id.btnStartAudioCall);
+        tvCallStatus = view.findViewById(R.id.tvCallStatus);
+        tvRecordingStatus = view.findViewById(R.id.tvRecordingStatus);
+
+        btnMic = view.findViewById(R.id.btnMic);
+        btnCamera = view.findViewById(R.id.btnCamera);
         btnScreenShare = view.findViewById(R.id.btnScreenShare);
-        btnRecordSession = view.findViewById(R.id.btnRecordSession);
-        btnEndSession = view.findViewById(R.id.btnEndSession);
-        rvSessionHistory = view.findViewById(R.id.rvSessionHistory);
+        btnRecord = view.findViewById(R.id.btnRecord);
+        btnEndCall = view.findViewById(R.id.btnEndCall);
+
+        videoContainer = view.findViewById(R.id.videoContainer); // This is a FrameLayout
+        placeholderLayout = view.findViewById(R.id.placeholderLayout);
+        callStatusBar = view.findViewById(R.id.callStatusBar);
 
         sharedPreferences = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
 
         // Set up button listeners
-        btnStartVideoCall.setOnClickListener(v -> startVideoCall());
-        btnStartAudioCall.setOnClickListener(v -> startAudioCall());
+        btnMic.setOnClickListener(v -> toggleMicrophone());
+        btnCamera.setOnClickListener(v -> toggleCamera());
         btnScreenShare.setOnClickListener(v -> toggleScreenShare());
-        btnRecordSession.setOnClickListener(v -> toggleRecording());
-        btnEndSession.setOnClickListener(v -> endSession());
-
-        // Setup session history recycler view
-        setupSessionHistory();
+        btnRecord.setOnClickListener(v -> toggleRecording());
+        btnEndCall.setOnClickListener(v -> endCall());
 
         // Check for active session
         checkActiveSession();
@@ -73,126 +74,182 @@ public class SessionsFragment extends Fragment {
         checkActiveSession();
     }
 
-    private void checkActiveSession() {
-        String sessionCode = sharedPreferences.getString("session_code", "");
-        boolean isConnected = sharedPreferences.getBoolean("is_connected", false);
-
-        if (!sessionCode.isEmpty() && isConnected) {
-            currentSessionCode = sessionCode;
-            showActiveSession(sessionCode);
-        } else {
-            showNoActiveSession();
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (callTimer != null) {
+            callTimer.cancel();
         }
     }
 
-    private void showActiveSession(String sessionCode) {
-        cardActiveSession.setVisibility(View.VISIBLE);
-        tvNoActiveSession.setVisibility(View.GONE);
+    private void checkActiveSession() {
+        try {
+            String sessionCode = sharedPreferences.getString("session_code", "");
+            boolean isConnected = sharedPreferences.getBoolean("is_connected", false);
 
-        tvSessionCode.setText("Session Code: " + sessionCode);
-        tvConnectionStatus.setText("Status: Connected");
-        tvConnectionStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark, requireContext().getTheme()));
-
-        // Show call buttons
-        btnStartVideoCall.setVisibility(View.VISIBLE);
-        btnStartAudioCall.setVisibility(View.VISIBLE);
-        btnScreenShare.setVisibility(View.VISIBLE);
-        btnRecordSession.setVisibility(View.VISIBLE);
-        btnEndSession.setVisibility(View.VISIBLE);
+            if (!sessionCode.isEmpty() && isConnected) {
+                currentSessionCode = sessionCode;
+                tvSessionCode.setText("Session Code: " + sessionCode);
+                // Auto-start call when session is active
+                startCall();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Error loading session", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void showNoActiveSession() {
-        cardActiveSession.setVisibility(View.GONE);
-        tvNoActiveSession.setVisibility(View.VISIBLE);
+    private void startCall() {
+        try {
+            isCallActive = true;
+
+            // Update UI for active call
+            placeholderLayout.setVisibility(View.GONE);
+            callStatusBar.setVisibility(View.VISIBLE);
+
+            // Start call timer
+            startCallTimer();
+
+            Toast.makeText(getContext(), "Call started", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Error starting call", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void startVideoCall() {
-        Toast.makeText(getContext(), "Starting video call...", Toast.LENGTH_SHORT).show();
-        isCallActive = true;
-        updateUIForActiveCall();
+    private void toggleMicrophone() {
+        isMicOn = !isMicOn;
+        if (isMicOn) {
+            btnMic.setImageResource(R.drawable.ic_mic_on);
+            Toast.makeText(getContext(), "Microphone on", Toast.LENGTH_SHORT).show();
+        } else {
+            btnMic.setImageResource(R.drawable.ic_mic_off);
+            Toast.makeText(getContext(), "Microphone off", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void startAudioCall() {
-        Toast.makeText(getContext(), "Starting audio call...", Toast.LENGTH_SHORT).show();
-        isCallActive = true;
-        updateUIForActiveCall();
+    private void toggleCamera() {
+        isCameraOn = !isCameraOn;
+        if (isCameraOn) {
+            btnCamera.setImageResource(R.drawable.ic_camera_on);
+            Toast.makeText(getContext(), "Camera on", Toast.LENGTH_SHORT).show();
+        } else {
+            btnCamera.setImageResource(R.drawable.ic_camera_off);
+            Toast.makeText(getContext(), "Camera off", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void toggleScreenShare() {
         isScreenSharing = !isScreenSharing;
         if (isScreenSharing) {
+            btnScreenShare.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue, requireContext().getTheme())));
             Toast.makeText(getContext(), "Screen sharing started", Toast.LENGTH_SHORT).show();
-            btnScreenShare.setText("Stop Sharing");
-            btnScreenShare.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.holo_red_dark, requireContext().getTheme())));
         } else {
+            btnScreenShare.setImageTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white, requireContext().getTheme())));
             Toast.makeText(getContext(), "Screen sharing stopped", Toast.LENGTH_SHORT).show();
-            btnScreenShare.setText("Share Screen");
-            btnScreenShare.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.holo_green_dark, requireContext().getTheme())));
         }
     }
 
     private void toggleRecording() {
         isRecording = !isRecording;
         if (isRecording) {
+            btnRecord.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.red, requireContext().getTheme())));
+            tvRecordingStatus.setVisibility(View.VISIBLE);
             Toast.makeText(getContext(), "Recording started", Toast.LENGTH_SHORT).show();
-            btnRecordSession.setText("Stop Recording");
-            btnRecordSession.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.holo_red_dark, requireContext().getTheme())));
         } else {
+            btnRecord.setImageTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white, requireContext().getTheme())));
+            tvRecordingStatus.setVisibility(View.GONE);
             Toast.makeText(getContext(), "Recording stopped", Toast.LENGTH_SHORT).show();
-            btnRecordSession.setText("Record");
-            btnRecordSession.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.holo_red_dark, requireContext().getTheme())));
         }
     }
 
-    private void endSession() {
-        // Clear session data
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("session_code");
-        editor.remove("is_connected");
-        editor.apply();
+    private void endCall() {
+        try {
+            isCallActive = false;
 
-        // Reset UI
-        showNoActiveSession();
-        isCallActive = false;
+            // Stop call timer
+            if (callTimer != null) {
+                callTimer.cancel();
+            }
+
+            // Reset UI
+            placeholderLayout.setVisibility(View.VISIBLE);
+            callStatusBar.setVisibility(View.GONE);
+
+            // Reset buttons
+            resetControlButtons();
+
+            // Clear session data
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("session_code");
+            editor.remove("is_connected");
+            editor.apply();
+
+            Toast.makeText(getContext(), "Call ended", Toast.LENGTH_SHORT).show();
+
+            // Add to session history
+            addToSessionHistory(currentSessionCode);
+            currentSessionCode = "";
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Error ending call", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startCallTimer() {
+        callTimer = new CountDownTimer(Long.MAX_VALUE, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                callDuration += 1000;
+                updateCallTimer();
+            }
+
+            @Override
+            public void onFinish() {
+            }
+        }.start();
+    }
+
+    private void updateCallTimer() {
+        try {
+            long seconds = callDuration / 1000;
+            long minutes = seconds / 60;
+            seconds = seconds % 60;
+
+            String time = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+            tvCallStatus.setText(time);
+        } catch (Exception e) {
+            // Timer update error
+        }
+    }
+
+    private void resetControlButtons() {
+        isMicOn = true;
+        isCameraOn = true;
         isScreenSharing = false;
         isRecording = false;
 
-        Toast.makeText(getContext(), "Session ended", Toast.LENGTH_SHORT).show();
-
-        // Add to session history
-        addToSessionHistory(currentSessionCode);
-        currentSessionCode = "";
-    }
-
-    private void updateUIForActiveCall() {
-        // Update UI when call is active
-        btnStartVideoCall.setVisibility(View.GONE);
-        btnStartAudioCall.setVisibility(View.GONE);
-        // You can add more UI updates here for active call state
-    }
-
-    private void setupSessionHistory() {
-        // For now, we'll just hide the recyclerview and show "no history" message
-        // You can implement this later with actual data
-        rvSessionHistory.setVisibility(View.GONE);
-        tvNoHistory.setVisibility(View.VISIBLE);
+        btnMic.setImageResource(R.drawable.ic_mic_on);
+        btnCamera.setImageResource(R.drawable.ic_camera_on);
+        btnScreenShare.setImageTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white, requireContext().getTheme())));
+        btnRecord.setImageTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white, requireContext().getTheme())));
     }
 
     private void addToSessionHistory(String sessionCode) {
-        // Add session to history (you can implement this with SharedPreferences or database)
-        // For now, we'll just show a toast
         Toast.makeText(getContext(), "Session " + sessionCode + " added to history", Toast.LENGTH_SHORT).show();
     }
 
-    // Call this method from HomeFragment when a session is created or joined
     public void setActiveSession(String sessionCode, boolean isHost) {
-        this.currentSessionCode = sessionCode;
+        try {
+            this.currentSessionCode = sessionCode;
+            tvSessionCode.setText("Session Code: " + sessionCode);
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("session_code", sessionCode);
-        editor.putBoolean("is_connected", true);
-        editor.apply();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("session_code", sessionCode);
+            editor.putBoolean("is_connected", true);
+            editor.apply();
 
-        showActiveSession(sessionCode);
+            // Auto-start the call
+            startCall();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Error setting active session", Toast.LENGTH_SHORT).show();
+        }
     }
 }
