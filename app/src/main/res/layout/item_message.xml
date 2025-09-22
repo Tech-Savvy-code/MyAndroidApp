@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <!-- Received Message Layout (Partner) -->
+    <LinearLayout
+        android:id="@+id/receivedMessageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="start"
+        android:background="@drawable/message_bubble_received"
+        android:padding="12dp"
+        android:layout_margin="4dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/receivedMessageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:maxWidth="240dp"/>
+
+    </LinearLayout>
+
+    <!-- Sent Message Layout (You) -->
+    <LinearLayout
+        android:id="@+id/sentMessageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="end"
+        android:background="@drawable/message_bubble_sent"
+        android:padding="12dp"
+        android:layout_margin="4dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/sentMessageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:maxWidth="240dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
