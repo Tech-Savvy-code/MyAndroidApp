@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <!-- Toolbar -->
+    <!-- Toolbar with Online Status -->
     <LinearLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -17,7 +16,15 @@
         android:paddingEnd="16dp"
         android:gravity="center_vertical">
 
+        <ImageView
+            android:id="@+id/partnerStatus"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_online"
+            android:layout_marginEnd="12dp"/>
+
         <TextView
+            android:id="@+id/toolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Messages"
@@ -31,10 +38,61 @@
             android:layout_weight="1"/>
 
         <ImageView
+            android:id="@+id/typingIndicator"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_typing"
+            android:visibility="gone"
+            android:layout_marginEnd="16dp"
+            app:tint="@color/white" />
+
+        <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_search"
             app:tint="@color/white" />
+    </LinearLayout>
+
+    <!-- Connection Status Banner -->
+    <LinearLayout
+        android:id="@+id/connectionBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:background="@color/orange"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:visibility="gone"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_warning"
+            android:layout_marginEnd="8dp"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/connectionStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connecting..."
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/retryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RETRY"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
     </LinearLayout>
 
     <!-- Empty State -->
@@ -82,6 +140,33 @@
         android:visibility="gone"
         android:padding="8dp"/>
 
+    <!-- Typing Indicator -->
+    <LinearLayout
+        android:id="@+id/typingIndicatorLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/messageInputLayout"
+        android:background="@drawable/message_bubble_received"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:visibility="gone"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Partner is typing..."
+            android:textColor="@color/gray"
+            android:textSize="12sp"
+            android:layout_marginEnd="8dp"/>
+
+        <ProgressBar
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:indeterminate="true"/>
+    </LinearLayout>
+
     <!-- Message Input -->
     <LinearLayout
         android:id="@+id/messageInputLayout"
@@ -94,6 +179,15 @@
         android:padding="12dp"
         android:visibility="gone">
 
+        <ImageButton
+            android:id="@+id/attachButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_attach"
+            android:layout_marginEnd="8dp"
+            app:tint="@color/gray" />
+
         <EditText
             android:id="@+id/messageInput"
             android:layout_width="0dp"
@@ -101,8 +195,9 @@
             android:layout_weight="1"
             android:hint="Type a message..."
             android:maxLines="3"
-            android:background="@null"
-            android:padding="12dp"/>
+            android:background="@drawable/edit_text_rounded"
+            android:padding="12dp"
+            android:layout_marginEnd="8dp"/>
 
         <ImageButton
             android:id="@+id/sendButton"
@@ -110,8 +205,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_send"
-            android:tint="@color/primary_color"
-            tools:ignore="UseAppTint" />
+            app:tint="@color/primary_color" />
     </LinearLayout>
 
 </RelativeLayout>
