@@ -42,6 +42,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             app:boxStrokeColor="@color/primary_color"
+            app:hintTextColor="@color/primary_color"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="1dp"
             app:shapeAppearanceOverlay="@style/TextInputLayoutRounded"
             app:startIconDrawable="@drawable/ic_email"
             app:startIconTint="@color/primary_color">
@@ -53,7 +56,8 @@
                 android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/black"
-                tools:ignore="HardcodedText" />
+                android:textColorHint="@color/gray"
+            tools:ignore="HardcodedText,TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Field with Icon -->
@@ -63,6 +67,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:boxStrokeColor="@color/primary_color"
+            app:hintTextColor="@color/primary_color"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="1dp"
             app:endIconMode="password_toggle"
             app:shapeAppearanceOverlay="@style/TextInputLayoutRounded"
             app:startIconDrawable="@drawable/ic_lock"
@@ -75,7 +82,8 @@
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:textColor="@color/black"
-                tools:ignore="HardcodedText" />
+                android:textColorHint="@color/gray"
+            tools:ignore="HardcodedText,TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Login Button -->
@@ -89,7 +97,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18sp"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText,VisualLintButtonSize" />
 
         <!-- Signup Link -->
         <TextView
@@ -97,11 +105,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
+            android:onClick="onSignupClick"
             android:text="Don't have an account? Sign Up"
             android:textColor="@color/primary_color"
             android:textStyle="bold"
-            android:onClick="onSignupClick"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText,TouchTargetSizeCheck" />
 
         <!-- Progress Indicator -->
         <ProgressBar

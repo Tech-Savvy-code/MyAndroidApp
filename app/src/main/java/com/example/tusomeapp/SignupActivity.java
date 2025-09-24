@@ -98,7 +98,6 @@ public class SignupActivity extends AppCompatActivity {
         int color;
 
         if (password.isEmpty()) {
-            strength = "";
             tvPasswordStrength.setText("");
             return;
         } else if (password.length() < 6) {
@@ -163,7 +162,7 @@ public class SignupActivity extends AppCompatActivity {
 
         // Get user role
         RadioGroup radioGroup = findViewById(R.id.radioGroup);
-        String role = radioGroup.getCheckedRadioButtonId() == R.id.radioStudent ? "student" : "tutor";
+        radioGroup.getCheckedRadioButtonId();
 
         // Mock signup process
         new Handler().postDelayed(() -> {

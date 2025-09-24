@@ -39,5 +39,7 @@
         <item name="android:background">@drawable/meet_end_call_button_bg</item>
         <item name="android:scaleType">centerInside</item>
         <item name="android:tint">@color/white</item>
+        <item name="android:textColorHint">@color/gray</item>
+
     </style>
 </resources>
