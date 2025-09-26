@@ -53,46 +53,54 @@
             app:tint="@color/white" />
     </LinearLayout>
 
-    <!-- Connection Status Banner -->
+    <!-- Enhanced Connection Status Banner -->
     <LinearLayout
         android:id="@+id/connectionBanner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
-        android:background="@color/orange"
+        android:background="@drawable/connection_banner_warning"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="10dp"
         android:visibility="gone"
         android:gravity="center_vertical">
 
         <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:src="@drawable/ic_warning"
-            android:layout_marginEnd="8dp"
+            android:id="@+id/connectionStatusIcon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_wifi"
+            android:layout_marginEnd="10dp"
             app:tint="@color/white" />
 
         <TextView
             android:id="@+id/connectionStatusText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Connecting..."
-            android:textColor="@color/white"
-            android:textSize="12sp"/>
-
-        <View
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Connecting to partner..."
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/retryButton"
+            android:id="@+id/connectionTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RETRY"
+            android:text="0s"
             android:textColor="@color/white"
-            android:textSize="12sp"
-            android:textStyle="bold"/>
+            android:textSize="11sp"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/retryButton"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_refresh"
+            android:contentDescription="Retry connection"
+            app:tint="@color/white" />
     </LinearLayout>
 
     <!-- Empty State -->

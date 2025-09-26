@@ -1,5 +1,6 @@
 package com.example.tusomeapp;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -28,13 +29,16 @@ public class MessagesFragment extends Fragment {
     private EditText messageInput;
     private ImageButton sendButton, attachButton;
     private LinearLayout emptyState, messageInputLayout, typingIndicatorLayout, connectionBanner;
-    private ImageView partnerStatus, typingIndicator;
-    private TextView toolbarTitle, connectionStatusText, retryButton;
+    private ImageView partnerStatus, typingIndicator, connectionStatusIcon;
+    private TextView toolbarTitle, connectionStatusText, connectionTime;
+    private ImageButton retryButton;
     private MessageAdapter messageAdapter;
     private final List<Message> messageList = new ArrayList<>();
     private final Handler typingHandler = new Handler();
-    private final boolean isPartnerOnline = true;
+    private final Handler connectionHandler = new Handler();
     private boolean isTyping = false;
+    private int connectionTimer = 0;
+    private Runnable connectionRunnable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +55,7 @@ public class MessagesFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("WrongViewCast")
     private void initializeViews(View view) {
         messagesRecyclerView = view.findViewById(R.id.messagesRecyclerView);
         messageInput = view.findViewById(R.id.messageInput);
@@ -62,8 +67,10 @@ public class MessagesFragment extends Fragment {
         connectionBanner = view.findViewById(R.id.connectionBanner);
         partnerStatus = view.findViewById(R.id.partnerStatus);
         typingIndicator = view.findViewById(R.id.typingIndicator);
+        connectionStatusIcon = view.findViewById(R.id.connectionStatusIcon);
         toolbarTitle = view.findViewById(R.id.toolbarTitle);
         connectionStatusText = view.findViewById(R.id.connectionStatusText);
+        connectionTime = view.findViewById(R.id.connectionTime);
         retryButton = view.findViewById(R.id.retryButton);
     }
 
@@ -192,13 +199,71 @@ public class MessagesFragment extends Fragment {
     }
 
     private void simulateConnectionStatus() {
-        // Simulate connection status changes
-        new Handler().postDelayed(() -> {
-            connectionBanner.setVisibility(View.VISIBLE);
-            connectionStatusText.setText("Partner is online");
-            connectionBanner.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
+        // Simulate realistic connection sequence
+        connectionHandler.postDelayed(() -> {
+            showConnectionBanner("Connecting to partner...", R.drawable.connection_banner_warning, R.drawable.ic_wifi);
+            startConnectionTimer();
+        }, 500);
+
+        connectionHandler.postDelayed(() -> {
+            updateConnectionStatus("Securing connection...", R.drawable.connection_banner_warning, R.drawable.ic_wifi);
+        }, 2000);
+
+        connectionHandler.postDelayed(() -> {
+            updateConnectionStatus("Partner connected • Excellent", R.drawable.connection_banner_gradient, R.drawable.ic_signal_wifi_4_bar);
+            connectionTime.setVisibility(View.VISIBLE);
             partnerStatus.setImageResource(R.drawable.ic_online);
-        }, 1000);
+        }, 3500);
+
+        connectionHandler.postDelayed(() -> {
+            // Simulate occasional connection issues
+            if (Math.random() > 0.7) { // 30% chance of connection issue
+                simulateConnectionIssue();
+            }
+        }, 10000);
+    }
+
+    private void showConnectionBanner(String message, int backgroundRes, int iconRes) {
+        connectionBanner.setVisibility(View.VISIBLE);
+        connectionBanner.setBackgroundResource(backgroundRes);
+        connectionStatusIcon.setImageResource(iconRes);
+        connectionStatusText.setText(message);
+        connectionTimer = 0;
+        connectionTime.setText("0s");
+    }
+
+    private void updateConnectionStatus(String message, int backgroundRes, int iconRes) {
+        connectionBanner.setBackgroundResource(backgroundRes);
+        connectionStatusIcon.setImageResource(iconRes);
+        connectionStatusText.setText(message);
+    }
+
+    private void startConnectionTimer() {
+        if (connectionRunnable != null) {
+            connectionHandler.removeCallbacks(connectionRunnable);
+        }
+
+        connectionRunnable = new Runnable() {
+            @Override
+            public void run() {
+                connectionTime.setText(connectionTimer + "s");
+                connectionTimer++;
+                connectionHandler.postDelayed(this, 1000);
+            }
+        };
+        connectionHandler.postDelayed(connectionRunnable, 1000);
+    }
+
+    private void simulateConnectionIssue() {
+        updateConnectionStatus("Connection unstable • Trying to reconnect", R.drawable.connection_banner_warning, R.drawable.ic_wifi);
+
+        connectionHandler.postDelayed(() -> {
+            if (Math.random() > 0.3) { // 70% chance of successful reconnect
+                updateConnectionStatus("Reconnected • Good", R.drawable.connection_banner_gradient, R.drawable.ic_signal_wifi_4_bar);
+            } else {
+                updateConnectionStatus("Connection lost • Tap to retry", R.drawable.connection_banner_error, R.drawable.ic_wifi);
+            }
+        }, 3000);
     }
 
     private void showAttachmentOptions() {
@@ -206,8 +271,12 @@ public class MessagesFragment extends Fragment {
     }
 
     private void retryConnection() {
-        connectionBanner.setVisibility(View.GONE);
-        Toast.makeText(getContext(), "Reconnecting...", Toast.LENGTH_SHORT).show();
+        showConnectionBanner("Reconnecting...", R.drawable.connection_banner_warning, R.drawable.ic_wifi);
+
+        connectionHandler.postDelayed(() -> {
+            updateConnectionStatus("Partner connected • Good", R.drawable.connection_banner_gradient, R.drawable.ic_signal_wifi_4_bar);
+            Toast.makeText(getContext(), "Connection restored", Toast.LENGTH_SHORT).show();
+        }, 2000);
     }
 
     private void showMessageSentToast() {
@@ -218,8 +287,15 @@ public class MessagesFragment extends Fragment {
         messagesRecyclerView.scrollToPosition(messageList.size() - 1);
     }
 
-    public boolean isPartnerOnline() {
-        return isPartnerOnline;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (connectionHandler != null && connectionRunnable != null) {
+            connectionHandler.removeCallbacks(connectionRunnable);
+        }
+        if (typingHandler != null) {
+            typingHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     // Enhanced Message class
@@ -250,7 +326,7 @@ public class MessagesFragment extends Fragment {
         public int getType() { return type; }
     }
 
-    // MessageAdapter remains the same as previous version
+    // MessageAdapter
     public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
         private List<Message> messages;
 
