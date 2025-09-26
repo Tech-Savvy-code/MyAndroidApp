@@ -144,9 +144,11 @@
         android:id="@+id/messagesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/connectionBanner"
+        android:layout_above="@id/messageInputLayout"
         android:visibility="gone"
         android:padding="8dp"/>
+
 
     <!-- Typing Indicator -->
     <LinearLayout
