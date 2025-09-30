@@ -1,6 +1,8 @@
 package com.example.tusomeapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -160,9 +162,16 @@ public class SignupActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         btnSignup.setEnabled(false);
 
+        // Get user data
+        String name = etName.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+
         // Get user role
         RadioGroup radioGroup = findViewById(R.id.radioGroup);
-        radioGroup.getCheckedRadioButtonId();
+        String role = radioGroup.getCheckedRadioButtonId() == R.id.radioStudent ? "Student" : "Tutor";
+
+        // Save user profile data
+        saveUserProfile(name, email, role);
 
         // Mock signup process
         new Handler().postDelayed(() -> {
@@ -173,6 +182,17 @@ public class SignupActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }, 2000);
+    }
+
+    private void saveUserProfile(String name, String email, String role) {
+        SharedPreferences prefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("userName", name);
+        editor.putString("userEmail", email);
+        editor.putString("userRole", role);
+        editor.putLong("joinDate", System.currentTimeMillis());
+        editor.putBoolean("isLoggedIn", true);
+        editor.apply();
     }
 
     public void onLoginClick(View view) {
