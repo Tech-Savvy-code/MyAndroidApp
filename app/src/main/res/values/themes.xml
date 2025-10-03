@@ -1,30 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.TusomeApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <!-- Base Theme (Light Mode Only) -->
+    <style name="Base.Theme.TusomeApp" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Force colors if needed -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
+    <!-- App Theme -->
     <style name="Theme.TusomeApp" parent="Base.Theme.TusomeApp" />
+
+    <!-- Rounded TextInputLayout -->
+    <style name="RoundedTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.RoundedCorners</item>
+    </style>
+
+    <!-- Shape appearance with rounded corners -->
     <style name="ShapeAppearanceOverlay.RoundedCorners" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
     </style>
 
-<!-- Add this style definition -->
-<style name="RoundedTextInputLayout" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-    <item name="cornerFamily">rounded</item>
-    <item name="cornerSize">16dp</item>
-</style>
+    <!-- Alternative AppTheme (legacy support) -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar" />
 
-<!-- Your existing styles -->
-<style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-    <!-- Your theme attributes -->
-</style>
-    <style name="TextInputLayoutRounded" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
-    </style>
+    <!-- Meet Control Button -->
     <style name="MeetControlButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>
@@ -33,6 +35,7 @@
         <item name="android:tint">@color/white</item>
     </style>
 
+    <!-- Meet End Call Button -->
     <style name="MeetEndCallButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>
@@ -40,6 +43,6 @@
         <item name="android:scaleType">centerInside</item>
         <item name="android:tint">@color/white</item>
         <item name="android:textColorHint">@color/gray</item>
-
     </style>
+
 </resources>

@@ -1,13 +1,14 @@
 package com.example.tusomeapp;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,9 +30,9 @@ public class MessagesFragment extends Fragment {
     private EditText messageInput;
     private ImageButton sendButton, attachButton;
     private LinearLayout emptyState, messageInputLayout, typingIndicatorLayout, connectionBanner;
-    private ImageView partnerStatus, typingIndicator, connectionStatusIcon;
-    private TextView toolbarTitle, connectionStatusText, connectionTime;
-    private ImageButton retryButton;
+    private ImageView partnerStatus, connectionStatusIcon;
+    private TextView toolbarTitle, connectionStatusText, connectionTime, typingIndicatorText;
+    private Button retryButton;
     private MessageAdapter messageAdapter;
     private final List<Message> messageList = new ArrayList<>();
     private final Handler typingHandler = new Handler();
@@ -55,22 +56,30 @@ public class MessagesFragment extends Fragment {
         return view;
     }
 
-    @SuppressLint("WrongViewCast")
     private void initializeViews(View view) {
+        // Make sure these IDs match exactly with your fragment_messages.xml
         messagesRecyclerView = view.findViewById(R.id.messagesRecyclerView);
         messageInput = view.findViewById(R.id.messageInput);
         sendButton = view.findViewById(R.id.sendButton);
         attachButton = view.findViewById(R.id.attachButton);
+
+        // These should be LinearLayout
         emptyState = view.findViewById(R.id.emptyState);
         messageInputLayout = view.findViewById(R.id.messageInputLayout);
         typingIndicatorLayout = view.findViewById(R.id.typingIndicatorLayout);
         connectionBanner = view.findViewById(R.id.connectionBanner);
+
+        // These should be ImageView
         partnerStatus = view.findViewById(R.id.partnerStatus);
-        typingIndicator = view.findViewById(R.id.typingIndicator);
         connectionStatusIcon = view.findViewById(R.id.connectionStatusIcon);
+
+        // These should be TextView
         toolbarTitle = view.findViewById(R.id.toolbarTitle);
         connectionStatusText = view.findViewById(R.id.connectionStatusText);
         connectionTime = view.findViewById(R.id.connectionTime);
+        typingIndicatorText = view.findViewById(R.id.typingIndicatorText);
+
+        // This should be Button
         retryButton = view.findViewById(R.id.retryButton);
     }
 
@@ -109,7 +118,7 @@ public class MessagesFragment extends Fragment {
     }
 
     private void checkActiveSession() {
-        boolean hasActiveSession = true; // Your session check logic
+        boolean hasActiveSession = true; // Replace with real logic
 
         if (hasActiveSession) {
             showChatInterface();
@@ -120,23 +129,25 @@ public class MessagesFragment extends Fragment {
     }
 
     private void showChatInterface() {
-        emptyState.setVisibility(View.GONE);
-        messageInputLayout.setVisibility(View.VISIBLE);
-        messagesRecyclerView.setVisibility(View.VISIBLE);
-        toolbarTitle.setText("Study Partner");
+        if (emptyState != null) emptyState.setVisibility(View.GONE);
+        if (messageInputLayout != null) messageInputLayout.setVisibility(View.VISIBLE);
+        if (messagesRecyclerView != null) messagesRecyclerView.setVisibility(View.VISIBLE);
+        if (toolbarTitle != null) toolbarTitle.setText("Study Partner");
     }
 
     private void showEmptyState() {
-        emptyState.setVisibility(View.VISIBLE);
-        messageInputLayout.setVisibility(View.GONE);
-        messagesRecyclerView.setVisibility(View.GONE);
+        if (emptyState != null) emptyState.setVisibility(View.VISIBLE);
+        if (messageInputLayout != null) messageInputLayout.setVisibility(View.GONE);
+        if (messagesRecyclerView != null) messagesRecyclerView.setVisibility(View.GONE);
     }
 
     private void addSampleMessages() {
         messageList.add(new Message("Hello! Ready for our math session?", "Partner", System.currentTimeMillis() - 3600000, false, Message.TYPE_TEXT));
         messageList.add(new Message("Yes, I need help with algebra", "You", System.currentTimeMillis() - 1800000, true, Message.TYPE_TEXT));
         messageList.add(new Message("Great! I'll share some practice problems", "Partner", System.currentTimeMillis() - 1200000, false, Message.TYPE_TEXT));
-        messageAdapter.notifyDataSetChanged();
+        if (messageAdapter != null) {
+            messageAdapter.notifyDataSetChanged();
+        }
         scrollToBottom();
     }
 
@@ -145,37 +156,53 @@ public class MessagesFragment extends Fragment {
         if (!messageText.isEmpty()) {
             Message newMessage = new Message(messageText, "You", System.currentTimeMillis(), true, Message.TYPE_TEXT);
             messageList.add(newMessage);
-            messageAdapter.notifyItemInserted(messageList.size() - 1);
+            if (messageAdapter != null) {
+                messageAdapter.notifyItemInserted(messageList.size() - 1);
+            }
             scrollToBottom();
 
-            messageInput.setText("");
+            if (messageInput != null) {
+                messageInput.setText("");
+            }
             simulatePartnerResponse(messageText);
             showMessageSentToast();
         }
     }
 
     private void simulatePartnerTyping() {
-        typingIndicator.setVisibility(View.VISIBLE);
+        if (typingIndicatorLayout != null) {
+            typingIndicatorLayout.setVisibility(View.VISIBLE);
+        }
         typingHandler.postDelayed(() -> {
-            typingIndicator.setVisibility(View.GONE);
+            if (typingIndicatorLayout != null) {
+                typingIndicatorLayout.setVisibility(View.GONE);
+            }
             isTyping = false;
         }, 2000);
     }
 
     private void hideTypingIndicator() {
-        typingIndicator.setVisibility(View.GONE);
+        if (typingIndicatorLayout != null) {
+            typingIndicatorLayout.setVisibility(View.GONE);
+        }
     }
 
     private void simulatePartnerResponse(String userMessage) {
-        typingIndicatorLayout.setVisibility(View.VISIBLE);
+        if (typingIndicatorLayout != null) {
+            typingIndicatorLayout.setVisibility(View.VISIBLE);
+        }
 
         new Handler().postDelayed(() -> {
-            typingIndicatorLayout.setVisibility(View.GONE);
+            if (typingIndicatorLayout != null) {
+                typingIndicatorLayout.setVisibility(View.GONE);
+            }
 
             String response = generateSmartResponse(userMessage);
             Message partnerMessage = new Message(response, "Partner", System.currentTimeMillis(), false, Message.TYPE_TEXT);
             messageList.add(partnerMessage);
-            messageAdapter.notifyItemInserted(messageList.size() - 1);
+            if (messageAdapter != null) {
+                messageAdapter.notifyItemInserted(messageList.size() - 1);
+            }
             scrollToBottom();
         }, 2000);
     }
@@ -199,43 +226,44 @@ public class MessagesFragment extends Fragment {
     }
 
     private void simulateConnectionStatus() {
-        // Simulate realistic connection sequence
         connectionHandler.postDelayed(() -> {
-            showConnectionBanner("Connecting to partner...", R.drawable.connection_banner_warning, R.drawable.ic_wifi);
+            showConnectionBanner("Connecting to partner...", android.R.color.holo_orange_light);
             startConnectionTimer();
         }, 500);
 
         connectionHandler.postDelayed(() -> {
-            updateConnectionStatus("Securing connection...", R.drawable.connection_banner_warning, R.drawable.ic_wifi);
+            updateConnectionStatus("Securing connection...", android.R.color.holo_orange_light);
         }, 2000);
 
         connectionHandler.postDelayed(() -> {
-            updateConnectionStatus("Partner connected • Excellent", R.drawable.connection_banner_gradient, R.drawable.ic_signal_wifi_4_bar);
-            connectionTime.setVisibility(View.VISIBLE);
-            partnerStatus.setImageResource(R.drawable.ic_online);
+            updateConnectionStatus("Partner connected • Excellent", android.R.color.holo_green_light);
+            if (connectionTime != null) connectionTime.setVisibility(View.VISIBLE);
+            if (partnerStatus != null) partnerStatus.setImageResource(android.R.drawable.presence_online);
         }, 3500);
 
         connectionHandler.postDelayed(() -> {
-            // Simulate occasional connection issues
-            if (Math.random() > 0.7) { // 30% chance of connection issue
+            if (Math.random() > 0.7) {
                 simulateConnectionIssue();
             }
         }, 10000);
     }
 
-    private void showConnectionBanner(String message, int backgroundRes, int iconRes) {
-        connectionBanner.setVisibility(View.VISIBLE);
-        connectionBanner.setBackgroundResource(backgroundRes);
-        connectionStatusIcon.setImageResource(iconRes);
-        connectionStatusText.setText(message);
+    private void showConnectionBanner(String message, int backgroundRes) {
+        if (connectionBanner != null) {
+            connectionBanner.setVisibility(View.VISIBLE);
+            connectionBanner.setBackgroundColor(getResources().getColor(backgroundRes));
+        }
+        if (connectionStatusIcon != null) connectionStatusIcon.setImageResource(android.R.drawable.ic_dialog_info);
+        if (connectionStatusText != null) connectionStatusText.setText(message);
         connectionTimer = 0;
-        connectionTime.setText("0s");
+        if (connectionTime != null) connectionTime.setText("0s");
     }
 
-    private void updateConnectionStatus(String message, int backgroundRes, int iconRes) {
-        connectionBanner.setBackgroundResource(backgroundRes);
-        connectionStatusIcon.setImageResource(iconRes);
-        connectionStatusText.setText(message);
+    private void updateConnectionStatus(String message, int backgroundRes) {
+        if (connectionBanner != null) {
+            connectionBanner.setBackgroundColor(getResources().getColor(backgroundRes));
+        }
+        if (connectionStatusText != null) connectionStatusText.setText(message);
     }
 
     private void startConnectionTimer() {
@@ -246,7 +274,9 @@ public class MessagesFragment extends Fragment {
         connectionRunnable = new Runnable() {
             @Override
             public void run() {
-                connectionTime.setText(connectionTimer + "s");
+                if (connectionTime != null) {
+                    connectionTime.setText(connectionTimer + "s");
+                }
                 connectionTimer++;
                 connectionHandler.postDelayed(this, 1000);
             }
@@ -255,13 +285,13 @@ public class MessagesFragment extends Fragment {
     }
 
     private void simulateConnectionIssue() {
-        updateConnectionStatus("Connection unstable • Trying to reconnect", R.drawable.connection_banner_warning, R.drawable.ic_wifi);
+        updateConnectionStatus("Connection unstable • Trying to reconnect", android.R.color.holo_orange_light);
 
         connectionHandler.postDelayed(() -> {
-            if (Math.random() > 0.3) { // 70% chance of successful reconnect
-                updateConnectionStatus("Reconnected • Good", R.drawable.connection_banner_gradient, R.drawable.ic_signal_wifi_4_bar);
+            if (Math.random() > 0.3) {
+                updateConnectionStatus("Reconnected • Good", android.R.color.holo_green_light);
             } else {
-                updateConnectionStatus("Connection lost • Tap to retry", R.drawable.connection_banner_error, R.drawable.ic_wifi);
+                updateConnectionStatus("Connection lost • Tap to retry", android.R.color.holo_red_light);
             }
         }, 3000);
     }
@@ -271,10 +301,10 @@ public class MessagesFragment extends Fragment {
     }
 
     private void retryConnection() {
-        showConnectionBanner("Reconnecting...", R.drawable.connection_banner_warning, R.drawable.ic_wifi);
+        showConnectionBanner("Reconnecting...", android.R.color.holo_orange_light);
 
         connectionHandler.postDelayed(() -> {
-            updateConnectionStatus("Partner connected • Good", R.drawable.connection_banner_gradient, R.drawable.ic_signal_wifi_4_bar);
+            updateConnectionStatus("Partner connected • Good", android.R.color.holo_green_light);
             Toast.makeText(getContext(), "Connection restored", Toast.LENGTH_SHORT).show();
         }, 2000);
     }
@@ -284,7 +314,9 @@ public class MessagesFragment extends Fragment {
     }
 
     private void scrollToBottom() {
-        messagesRecyclerView.scrollToPosition(messageList.size() - 1);
+        if (messagesRecyclerView != null && messageList.size() > 0) {
+            messagesRecyclerView.scrollToPosition(messageList.size() - 1);
+        }
     }
 
     @Override
@@ -298,7 +330,9 @@ public class MessagesFragment extends Fragment {
         }
     }
 
-    // Enhanced Message class
+    // ============================
+    // Message Model Class
+    // ============================
     public static class Message {
         public static final int TYPE_TEXT = 0;
         public static final int TYPE_IMAGE = 1;
@@ -318,7 +352,6 @@ public class MessagesFragment extends Fragment {
             this.type = type;
         }
 
-        // Getters
         public String getText() { return text; }
         public String getSender() { return sender; }
         public long getTimestamp() { return timestamp; }
@@ -326,17 +359,14 @@ public class MessagesFragment extends Fragment {
         public int getType() { return type; }
     }
 
-    // MessageAdapter
+    // ============================
+    // MessageAdapter Class
+    // ============================
     public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
-        private List<Message> messages;
+        private final List<Message> messages;
 
         public MessageAdapter(List<Message> messages) {
             this.messages = messages;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return messages.get(position).isSent() ? 1 : 0;
         }
 
         @NonNull
@@ -350,15 +380,18 @@ public class MessagesFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
             Message message = messages.get(position);
+            String time = DateFormat.format("hh:mm a", message.getTimestamp()).toString();
 
             if (message.isSent()) {
                 holder.sentMessageLayout.setVisibility(View.VISIBLE);
                 holder.receivedMessageLayout.setVisibility(View.GONE);
                 holder.sentMessageText.setText(message.getText());
+                holder.sentMessageTime.setText(time);
             } else {
                 holder.receivedMessageLayout.setVisibility(View.VISIBLE);
                 holder.sentMessageLayout.setVisibility(View.GONE);
                 holder.receivedMessageText.setText(message.getText());
+                holder.receivedMessageTime.setText(time);
             }
         }
 
@@ -369,7 +402,7 @@ public class MessagesFragment extends Fragment {
 
         public class MessageViewHolder extends RecyclerView.ViewHolder {
             LinearLayout receivedMessageLayout, sentMessageLayout;
-            TextView receivedMessageText, sentMessageText;
+            TextView receivedMessageText, sentMessageText, receivedMessageTime, sentMessageTime;
 
             public MessageViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -377,6 +410,8 @@ public class MessagesFragment extends Fragment {
                 sentMessageLayout = itemView.findViewById(R.id.sentMessageLayout);
                 receivedMessageText = itemView.findViewById(R.id.receivedMessageText);
                 sentMessageText = itemView.findViewById(R.id.sentMessageText);
+                receivedMessageTime = itemView.findViewById(R.id.receivedMessageTime);
+                sentMessageTime = itemView.findViewById(R.id.sentMessageTime);
             }
         }
     }

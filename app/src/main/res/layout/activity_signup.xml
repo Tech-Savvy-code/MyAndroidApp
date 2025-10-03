@@ -57,7 +57,7 @@
             app:hintTextColor="@color/primary_color"
             app:boxStrokeWidth="1dp"
             app:boxStrokeWidthFocused="1dp"
-            app:shapeAppearanceOverlay="@style/TextInputLayoutRounded"
+            app:shapeAppearanceOverlay="@style/RoundedTextInputLayout"
             app:startIconDrawable="@drawable/ic_person"
             app:startIconTint="@color/primary_color">
 
@@ -82,7 +82,7 @@
             app:hintTextColor="@color/primary_color"
             app:boxStrokeWidth="1dp"
             app:boxStrokeWidthFocused="1dp"
-            app:shapeAppearanceOverlay="@style/TextInputLayoutRounded"
+            app:shapeAppearanceOverlay="@style/RoundedTextInputLayout"
             app:startIconDrawable="@drawable/ic_email"
             app:startIconTint="@color/primary_color">
 
@@ -108,7 +108,7 @@
             app:hintTextColor="@color/primary_color"
             app:boxStrokeWidth="1dp"
             app:boxStrokeWidthFocused="1dp"
-            app:shapeAppearanceOverlay="@style/TextInputLayoutRounded"
+            app:shapeAppearanceOverlay="@style/RoundedTextInputLayout"
             app:startIconDrawable="@drawable/ic_lock"
             app:startIconTint="@color/primary_color">
 

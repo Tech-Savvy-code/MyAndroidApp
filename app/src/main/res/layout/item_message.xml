@@ -4,50 +4,67 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="4dp">
+    android:padding="6dp">
 
-    <!-- Received Message Layout (Partner) -->
+    <!-- Received Message -->
     <LinearLayout
         android:id="@+id/receivedMessageLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="start"
-        android:background="@drawable/message_bubble_received"
+        android:background="@drawable/bg_message_received"
         android:padding="12dp"
-        android:layout_margin="4dp"
+        android:layout_gravity="start"
+        android:orientation="vertical"
+        android:layout_marginEnd="80dp"
         android:visibility="gone">
 
         <TextView
             android:id="@+id/receivedMessageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:maxWidth="240dp"/>
+            android:text="Hello!"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
 
+        <TextView
+            android:id="@+id/receivedMessageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:32 AM"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="11sp"
+            android:layout_marginTop="4dp" />
     </LinearLayout>
 
-    <!-- Sent Message Layout (You) -->
+    <!-- Sent Message -->
     <LinearLayout
         android:id="@+id/sentMessageLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="end"
-        android:background="@drawable/message_bubble_sent"
+        android:background="@drawable/bg_message_sent"
         android:padding="12dp"
-        android:layout_margin="4dp"
+        android:layout_gravity="end"
+        android:orientation="vertical"
+        android:layout_marginStart="80dp"
         android:visibility="gone">
 
         <TextView
             android:id="@+id/sentMessageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:maxWidth="240dp"/>
+            android:text="Hi there!"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
 
+        <TextView
+            android:id="@+id/sentMessageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:33 AM"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"
+            android:alpha="0.8"
+            android:layout_marginTop="4dp" />
     </LinearLayout>
 
 </LinearLayout>
