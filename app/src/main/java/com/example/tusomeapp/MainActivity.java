@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         // Blinking animation for additional text
         ValueAnimator blinkAnimator = ValueAnimator.ofInt(
                 0xFF616161, // gray
-                0xFF2196F3  // blue
+                0xFF6200EE  // blue
         );
         blinkAnimator.setEvaluator(new ArgbEvaluator());
         blinkAnimator.setDuration(500);
