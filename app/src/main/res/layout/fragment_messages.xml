@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".MessagesFragment">
 
     <!-- Top Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -14,23 +15,9 @@
         android:background="@color/primary_color"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:title="Study Partner"
-        app:subtitle="online"
+        app:subtitle="Online"
         app:titleTextColor="@color/white"
         app:subtitleTextColor="@color/white" />
-
-    <!-- Custom Toolbar Title -->
-    <TextView
-        android:id="@+id/toolbarTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/chatToolbar"
-        android:layout_alignTop="@id/chatToolbar"
-        android:layout_marginStart="56dp"
-        android:gravity="center_vertical"
-        android:text="Study Partner"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold" />
 
     <!-- Connection Status Banner -->
     <LinearLayout
@@ -41,7 +28,8 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@color/red"
-        android:padding="12dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
         android:elevation="4dp"
         android:visibility="gone">
 
@@ -49,37 +37,44 @@
             android:id="@+id/connectionStatusIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@android:drawable/ic_dialog_info"
             android:layout_marginEnd="8dp"
+            android:src="@android:drawable/ic_dialog_info"
             app:tint="@android:color/white" />
 
-        <TextView
-            android:id="@+id/connectionStatusText"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Disconnected"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/connectionTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2m ago"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:layout_marginStart="8dp"
-            android:visibility="gone"/>
+            <TextView
+                android:id="@+id/connectionStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Disconnected"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/connectionTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2m ago"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/retryButton"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:text="Retry"
             android:textColor="@android:color/white"
-            android:background="@color/primary_color"
-            android:layout_marginStart="12dp"/>
+            android:backgroundTint="@color/primary_color"
+            android:layout_marginStart="8dp"
+            android:minHeight="32dp"
+            style="?attr/materialButtonOutlinedStyle" />
     </LinearLayout>
 
     <!-- Messages List -->
@@ -92,12 +87,11 @@
         android:clipToPadding="false"
         android:padding="8dp" />
 
-    <!-- Empty State (when no messages) - This should be a LinearLayout -->
+    <!-- Empty State -->
     <LinearLayout
         android:id="@+id/emptyState"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
@@ -112,13 +106,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Start a session to begin messaging"
             android:textColor="@color/gray"
-            android:textSize="14sp"
-            android:layout_marginTop="8dp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- Typing Indicator Layout -->
+    <!-- Typing Indicator -->
     <LinearLayout
         android:id="@+id/typingIndicatorLayout"
         android:layout_width="wrap_content"
@@ -149,7 +143,7 @@
             android:textSize="13sp" />
     </LinearLayout>
 
-    <!-- Input Field & Send + Attach Button -->
+    <!-- Input Field -->
     <LinearLayout
         android:id="@+id/messageInputLayout"
         android:layout_width="match_parent"
@@ -167,8 +161,7 @@
             android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_attach"
-            app:tint="@color/gray"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            app:tint="@color/gray" />
 
         <EditText
             android:id="@+id/messageInput"
@@ -189,8 +182,7 @@
             android:layout_marginStart="8dp"
             android:background="@drawable/send_button_bg"
             android:src="@drawable/ic_send"
-            app:tint="@android:color/white"
-            tools:ignore="SpeakableTextPresentCheck" />
+            app:tint="@android:color/white" />
     </LinearLayout>
 
 </RelativeLayout>
