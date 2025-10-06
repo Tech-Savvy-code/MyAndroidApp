@@ -20,8 +20,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:src="@drawable/mortarboard"
-            android:contentDescription="App logo"
-            tools:ignore="HardcodedText" />
+            android:contentDescription="App logo" />
 
         <!-- Title -->
         <TextView
@@ -32,8 +31,7 @@
             android:text="Join Tusome Today"
             android:textColor="@color/black"
             android:textSize="24sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText" />
+            android:textStyle="bold" />
 
         <!-- Subtitle -->
         <TextView
@@ -43,21 +41,14 @@
             android:layout_marginTop="4dp"
             android:text="Start your learning journey"
             android:textColor="@color/gray"
-            android:textSize="14sp"
-            tools:ignore="HardcodedText,TextContrastCheck" />
+            android:textSize="14sp" />
 
         <!-- Name Field -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/CurvedTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxStrokeColor="@color/primary_color"
-            app:hintTextColor="@color/primary_color"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeWidthFocused="1dp"
-            app:shapeAppearanceOverlay="@style/RoundedTextInputLayout"
             app:startIconDrawable="@drawable/ic_person"
             app:startIconTint="@color/primary_color">
 
@@ -67,22 +58,15 @@
                 android:layout_height="wrap_content"
                 android:hint="Full Name"
                 android:inputType="textCapWords"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText,TextContrastCheck,VisualLintTextFieldSize" />
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Email Field -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/CurvedTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxStrokeColor="@color/primary_color"
-            app:hintTextColor="@color/primary_color"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeWidthFocused="1dp"
-            app:shapeAppearanceOverlay="@style/RoundedTextInputLayout"
             app:startIconDrawable="@drawable/ic_email"
             app:startIconTint="@color/primary_color">
 
@@ -92,23 +76,16 @@
                 android:layout_height="wrap_content"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText,TextContrastCheck,VisualLintTextFieldSize" />
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Field -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/CurvedTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:endIconMode="password_toggle"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxStrokeColor="@color/primary_color"
-            app:hintTextColor="@color/primary_color"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeWidthFocused="1dp"
-            app:shapeAppearanceOverlay="@style/RoundedTextInputLayout"
             app:startIconDrawable="@drawable/ic_lock"
             app:startIconTint="@color/primary_color">
 
@@ -118,8 +95,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText,TextContrastCheck,VisualLintTextFieldSize" />
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Strength Meter -->
@@ -138,8 +114,7 @@
             android:layout_marginTop="16dp"
             android:text="I am a:"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            tools:ignore="HardcodedText" />
+            android:textSize="16sp" />
 
         <RadioGroup
             android:id="@+id/radioGroup"
@@ -155,16 +130,14 @@
                 android:layout_marginEnd="16dp"
                 android:checked="true"
                 android:text="Student"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText" />
+                android:textColor="@color/black" />
 
             <RadioButton
                 android:id="@+id/radioTutor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tutor"
-                android:textColor="@color/black"
-                tools:ignore="HardcodedText" />
+                android:textColor="@color/black" />
         </RadioGroup>
 
         <!-- Terms Checkbox -->
@@ -174,8 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="I agree to Terms and Conditions"
-            android:textColor="@color/black"
-            tools:ignore="HardcodedText,VisualLintButtonSize" />
+            android:textColor="@color/black" />
 
         <!-- Signup Button -->
         <Button
@@ -187,8 +159,7 @@
             android:text="Create Account"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            tools:ignore="HardcodedText,VisualLintButtonSize" />
+            android:textSize="18sp" />
 
         <!-- Login Link -->
         <TextView
@@ -199,8 +170,7 @@
             android:text="Already have an account? Login"
             android:textColor="@color/primary_color"
             android:textStyle="bold"
-            android:onClick="onLoginClick"
-            tools:ignore="HardcodedText" />
+            android:onClick="onLoginClick" />
 
         <!-- Progress Indicator -->
         <ProgressBar

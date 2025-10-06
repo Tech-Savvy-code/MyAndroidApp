@@ -3,7 +3,7 @@
 
     <!-- Base Theme (Light Mode Only) -->
     <style name="Base.Theme.TusomeApp" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Force colors if needed -->
+        <!-- Force colors to prevent dark mode -->
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:windowBackground">@color/white</item>
@@ -12,15 +12,18 @@
     <!-- App Theme -->
     <style name="Theme.TusomeApp" parent="Base.Theme.TusomeApp" />
 
-    <!-- Rounded TextInputLayout -->
-    <style name="RoundedTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.RoundedCorners</item>
-    </style>
-
-    <!-- Shape appearance with rounded corners -->
-    <style name="ShapeAppearanceOverlay.RoundedCorners" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+    <!-- Curved TextInputLayout (For Login & Signup fields) -->
+    <style name="CurvedTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxCornerRadiusTopStart">24dp</item>
+        <item name="boxCornerRadiusTopEnd">24dp</item>
+        <item name="boxCornerRadiusBottomStart">20dp</item>
+        <item name="boxCornerRadiusBottomEnd">20dp</item>
+        <item name="boxStrokeColor">@color/primary_color</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="hintTextColor">@color/gray</item>
+        <item name="android:textColorHint">@color/gray</item>
     </style>
 
     <!-- Alternative AppTheme (legacy support) -->
