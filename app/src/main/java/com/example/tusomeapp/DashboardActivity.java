@@ -5,18 +5,17 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private ViewPager2 viewPager;
     private BottomNavigationView bottomNav;
+    private TextView tvTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,74 +23,67 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         // Initialize views
-        viewPager = findViewById(R.id.viewPager);
         bottomNav = findViewById(R.id.bottomNav);
+        tvTitle = findViewById(R.id.tvTitle);
 
         // Get user data from Intent
         Intent intent = getIntent();
         String userName = intent.getStringExtra("USER_NAME");
         String userRole = intent.getStringExtra("ROLE");
 
-        // Setup ViewPager with fragments
-        DashboardPagerAdapter pagerAdapter = new DashboardPagerAdapter(this);
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setUserInputEnabled(false); // Disable swipe
+        // Load the default fragment (Home)
+        loadFragment(new HomeFragment());
+        tvTitle.setText("Dashboard");
 
-        // Connect ViewPager with BottomNavigation
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                bottomNav.getMenu().getItem(position).setChecked(true);
-            }
-        });
+        // Bottom Navigation item selection
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            String title = "Dashboard";
 
-        bottomNav.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
-                viewPager.setCurrentItem(0);
+                selectedFragment = new HomeFragment();
+                title = "Home";
             } else if (itemId == R.id.nav_sessions) {
-                viewPager.setCurrentItem(1);
+                selectedFragment = new SessionsFragment();
+                title = "Sessions";
             } else if (itemId == R.id.nav_messages) {
-                viewPager.setCurrentItem(2);
+                selectedFragment = new MessagesFragment();
+                title = "Messages";
             } else if (itemId == R.id.nav_profile) {
-                viewPager.setCurrentItem(3);
+                selectedFragment = new ProfileFragment();
+                title = "Profile";
             }
+
+            // Load selected fragment
+            if (selectedFragment != null) {
+                loadFragment(selectedFragment);
+                tvTitle.setText(title);
+            }
+
             return true;
         });
 
-        // Update UI based on user role
+        // Update UI for tutor role
         if (userRole != null && userRole.equals("tutor")) {
-            TextView title = findViewById(R.id.tvTitle);
-            title.setText("Tutor Dashboard");
+            tvTitle.setText("Tutor Dashboard");
         }
     }
 
-    // ViewPager Adapter
-    private static class DashboardPagerAdapter extends FragmentStateAdapter {
-        public DashboardPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
-            super(fragmentActivity);
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            switch (position) {
-                case 0: return new HomeFragment();
-                case 1: return new SessionsFragment();
-                case 2: return new MessagesFragment();
-                case 3: return new ProfileFragment();
-                default: return new HomeFragment();
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return 4;
-        }
+    /**
+     * Replace fragment inside fragment_container
+     */
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 
+    /**
+     * Logout handler
+     */
     public void onLogoutClick(View view) {
-        // Clear session and return to login
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }

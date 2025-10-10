@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=" b.DashboardActivity">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -21,7 +23,7 @@
             android:text="Dashboard"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/ivLogout"
@@ -31,15 +33,18 @@
             android:layout_marginEnd="16dp"
             android:onClick="onLogoutClick"
             android:src="@drawable/ic_logout"
-            android:tint="@color/white"/>
+            app:tint="@color/white"
+            tools:ignore="UseAppTint,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <!-- ViewPager for Fragments -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
+    <!-- Fragment Container for Dynamic Fragment Loading -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        tools:ignore="MissingConstraints"
+        tools:layout="@layout/fragment_home" />
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -50,5 +55,5 @@
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/bottom_nav_colors"
-        app:itemTextColor="@color/bottom_nav_colors"/>
+        app:itemTextColor="@color/bottom_nav_colors" />
 </LinearLayout>

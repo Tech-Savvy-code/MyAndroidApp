@@ -218,6 +218,18 @@
                     android:textColor="@color/white"
                     android:visibility="gone"
                     android:textAllCaps="false"/>
+
+                <!-- 🆕 Back to Dashboard Button -->
+                <Button
+                    android:id="@+id/btnBackToDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Back to Dashboard"
+                    android:textAllCaps="false"
+                    android:backgroundTint="@color/primary_color"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    android:layout_marginTop="12dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
