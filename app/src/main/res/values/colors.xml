@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base colors -->
     <color name="white">#FFFFFFFF</color>
     <color name="black">#000000</color>
     <color name="gray">#808080</color>
-    <color name="orange">#FFA500</color>
-    <color name="Tomato">#ff6347</color>
-    <color name="red_orange">#ff4500</color>
-    <color name="primary_color">#6200EE</color> <!-- Example primary color -->
-
-    <!-- Material Colors -->
-    <color name="red">#F44336</color>
-    <color name="green">#4CAF50</color>
-    <color name="dark_gray">#1A1A1A</color>
-    <color name="blue">#4285F4</color>
     <color name="light_gray">#F5F5F5</color>
+    <color name="dark_gray">#1A1A1A</color>
+
+    <!-- App brand colors -->
+    <color name="primary_color">#6200EE</color>  <!-- Purple tone -->
+    <color name="secondary_color">#03DAC5</color> <!-- Teal accent -->
+    <color name="background_light">#F7F9FC</color>
+
+    <!-- State colors -->
+    <color name="green">#4CAF50</color>
+    <color name="success_green">#2E7D32</color>
+    <color name="orange">#FFA500</color>
+    <color name="red_orange">#FF4500</color>
+    <color name="red">#F44336</color>
+    <color name="blue">#4285F4</color>
 </resources>

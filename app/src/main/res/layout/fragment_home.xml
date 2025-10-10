@@ -1,115 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background_light"
     android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-        <!-- Welcome Section -->
+        <!-- Top Welcome Banner -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="160dp"
             android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/home_header_gradient"
             android:padding="16dp"
-            android:background="@drawable/card_background"
-            android:layout_marginBottom="16dp">
+            android:elevation="6dp"
+            android:layout_marginBottom="20dp"
+            android:clipToOutline="true"
+            android:backgroundTintMode="src_in">
 
             <TextView
                 android:id="@+id/tvWelcome"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Welcome, User!"
-                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="4dp"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ready to start your learning session?"
-                android:textSize="14sp"
-                android:textColor="@color/gray"/>
+                android:text="Ready to start your learning journey?"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:alpha="0.9"/>
         </LinearLayout>
 
-        <!-- Create Session Card -->
+        <!-- Quick Actions Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quick Actions"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Create Session -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="5dp"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardBackgroundColor="@color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Create a Session"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="12dp"/>
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_create_session"
+                    android:contentDescription="Create session icon"
+                    android:layout_marginEnd="16dp"/>
 
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Start a new learning session and share the code with your partner"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray"
-                    android:layout_marginBottom="16dp"/>
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Create a Session"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Start a new study session and share your code."
+                        android:textColor="@color/gray"
+                        android:textSize="14sp"/>
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btnCreateSession"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:text="Create Session"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
                     android:backgroundTint="@color/primary_color"
+                    android:paddingHorizontal="12dp"
+                    android:text="Create"
+                    android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textAllCaps="false"/>
+                    tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Join Session Card -->
+        <!-- Join Session -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="5dp"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardBackgroundColor="@color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="16dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Join a Session"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="12dp"/>
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Enter a session code to join your partner's learning session"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray"
-                    android:layout_marginBottom="12dp"/>
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_join_session"
+                        android:contentDescription="Join session icon"
+                        android:layout_marginEnd="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Join a Session"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
 
                 <EditText
                     android:id="@+id/etSessionCode"
@@ -119,50 +158,43 @@
                     android:inputType="number"
                     android:maxLength="4"
                     android:background="@drawable/edit_text_background"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginBottom="12dp"
+                    android:paddingHorizontal="12dp"/>
 
                 <Button
                     android:id="@+id/btnJoinSession"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:text="Join Session"
-                    android:backgroundTint="@color/primary_color"
-                    android:textColor="@color/white"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:backgroundTint="@color/secondary_color"
+                    android:textColor="@color/white"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Session Status Card -->
+        <!-- Session Status -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardSessionStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="5dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Session Status"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="12dp"/>
+                android:padding="16dp">
 
                 <TextView
                     android:id="@+id/tvSessionCode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Session Code: -"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="16sp"
-                    android:textColor="@color/gray"
                     android:layout_marginBottom="8dp"/>
 
                 <TextView
@@ -170,8 +202,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Status: Not connected"
-                    android:textSize="16sp"
-                    android:textColor="@color/red"
+                    android:textColor="@color/gray"
+                    android:textSize="15sp"
                     android:layout_marginBottom="16dp"/>
 
                 <Button
@@ -179,10 +211,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:text="Start Call"
-                    android:backgroundTint="@color/green"
+                    android:backgroundTint="@color/success_green"
                     android:textColor="@color/white"
-                    android:textAllCaps="false"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    android:textAllCaps="false"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
