@@ -12,9 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
 import java.util.Random;
 
 public class HomeFragment extends Fragment {
@@ -32,7 +34,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Initialize views
+        // Initialize views from layout
         tvWelcome = view.findViewById(R.id.tvWelcome);
         btnCreateSession = view.findViewById(R.id.btnCreateSession);
         btnJoinSession = view.findViewById(R.id.btnJoinSession);
@@ -42,14 +44,28 @@ public class HomeFragment extends Fragment {
         tvConnectionStatus = view.findViewById(R.id.tvConnectionStatus);
         btnStartCall = view.findViewById(R.id.btnStartCall);
 
-        // Load username from SharedPreferences
+        // Load username
         sharedPreferences = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
         String username = sharedPreferences.getString("username", "User");
         tvWelcome.setText("Welcome, " + username + " 👋");
 
-        // Set click listeners
-        btnCreateSession.setOnClickListener(v -> createSession());
-        btnJoinSession.setOnClickListener(v -> joinSession());
+        // --- Fix: Ensure buttons are clickable & not blocked ---
+        btnCreateSession.setClickable(true);
+        btnCreateSession.setFocusable(true);
+        btnJoinSession.setClickable(true);
+        btnJoinSession.setFocusable(true);
+
+        // --- Click listeners for your existing buttons ---
+        btnCreateSession.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Creating session...", Toast.LENGTH_SHORT).show();
+            createSession();
+        });
+
+        btnJoinSession.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Joining session...", Toast.LENGTH_SHORT).show();
+            joinSession();
+        });
+
         btnStartCall.setOnClickListener(v -> startCall());
 
         return view;
@@ -60,20 +76,18 @@ public class HomeFragment extends Fragment {
         Random random = new Random();
         currentSessionCode = String.format("%04d", random.nextInt(10000));
 
-        // Fade in session card
         fadeInView(cardSessionStatus);
-
         tvSessionCode.setText("Session Code: " + currentSessionCode);
         tvConnectionStatus.setText("Status: Waiting for partner...");
         tvConnectionStatus.setTextColor(getResources().getColor(R.color.orange));
 
-        // Save in preferences
+        // Save to preferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("session_code", currentSessionCode);
         editor.putBoolean("is_connected", false);
         editor.apply();
 
-        // Simulate connection delay (3 seconds)
+        // Simulate a connection delay
         new Handler().postDelayed(() -> simulateConnection(true), 3000);
     }
 
@@ -87,7 +101,7 @@ public class HomeFragment extends Fragment {
 
         currentSessionCode = inputCode;
 
-        // Save entered code
+        // Save code
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("session_code", currentSessionCode);
         editor.putBoolean("is_connected", false);
@@ -108,35 +122,30 @@ public class HomeFragment extends Fragment {
         tvConnectionStatus.setTextColor(getResources().getColor(R.color.green));
         btnStartCall.setVisibility(View.VISIBLE);
 
-        // Hide other controls
+        // Hide unused views
         btnCreateSession.setVisibility(View.GONE);
         btnJoinSession.setVisibility(View.GONE);
         etSessionCode.setVisibility(View.GONE);
 
-        // Update SharedPreferences
+        // Save connection status
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("is_connected", true);
         editor.apply();
 
-        // Notify other fragment
         notifySessionsFragment(currentSessionCode, isHost);
 
         Toast.makeText(getContext(), "Connected successfully 🎉", Toast.LENGTH_SHORT).show();
     }
 
     private void startCall() {
-        Toast.makeText(getContext(),
-                "Starting call with session: " + currentSessionCode,
-                Toast.LENGTH_SHORT).show();
-
-        // Future implementation: Launch call activity here
+        Toast.makeText(getContext(), "Starting call with session: " + currentSessionCode, Toast.LENGTH_SHORT).show();
+        // TODO: Add intent to call activity here
     }
 
     private void notifySessionsFragment(String sessionCode, boolean isHost) {
         try {
             FragmentManager fragmentManager = getParentFragmentManager();
-            Fragment sessionsFragment =
-                    fragmentManager.findFragmentByTag("android:switcher:" + R.id.viewPager + ":1");
+            Fragment sessionsFragment = fragmentManager.findFragmentByTag("android:switcher:" + R.id.viewPager + ":1");
 
             if (sessionsFragment instanceof SessionsFragment) {
                 ((SessionsFragment) sessionsFragment).setActiveSession(sessionCode, isHost);
@@ -160,7 +169,6 @@ public class HomeFragment extends Fragment {
             currentSessionCode = sessionCode;
 
             fadeInView(cardSessionStatus);
-
             tvSessionCode.setText("Session Code: " + sessionCode);
             tvConnectionStatus.setText("Status: Connected");
             tvConnectionStatus.setTextColor(getResources().getColor(R.color.green));
@@ -175,7 +183,7 @@ public class HomeFragment extends Fragment {
     private void fadeInView(View view) {
         view.setVisibility(View.VISIBLE);
         AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
-        fadeIn.setDuration(500);
+        fadeIn.setDuration(400);
         view.startAnimation(fadeIn);
     }
 }
