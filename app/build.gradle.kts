@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -32,7 +33,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -41,19 +41,20 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-}
-dependencies {
+    // UI Libraries
     implementation("de.hdodenhof:circleimageview:3.1.0")
-}
-dependencies {
-    implementation("com.google.android.material:material:1.9.0")  // Use latest version
-}
-dependencies {
-    implementation("androidx.compose.material:material-icons-extended:1.5.4") // Or latest version
-}
-dependencies {
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    // Navigation
     implementation("androidx.navigation:navigation-fragment:2.6.0")
     implementation("androidx.navigation:navigation-ui:2.6.0")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-database:21.0.0")
+    implementation("com.google.firebase:firebase-firestore:25.0.0")
+    implementation("com.google.firebase:firebase-storage:21.0.0")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
 }

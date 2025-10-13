@@ -19,7 +19,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.Random;
-
+ 
 public class HomeFragment extends Fragment {
 
     private TextView tvWelcome, tvSessionCode, tvConnectionStatus;

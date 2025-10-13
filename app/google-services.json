@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "78656488645",
+    "project_id": "tusomeapp-43850",
+    "storage_bucket": "tusomeapp-43850.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:78656488645:android:370d3b4deaa03f4dae9cac",
+        "android_client_info": {
+          "package_name": "com.example.tusomeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi3W_XYLhNJu934HFoD0Lx2t0klOFOEUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
