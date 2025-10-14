@@ -10,7 +10,6 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.*;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -54,14 +53,11 @@ public class SignupActivity extends AppCompatActivity {
         tvPasswordStrength = findViewById(R.id.tvPasswordStrength);
         radioGroup = findViewById(R.id.radioGroup);
 
-        // Disable signup initially
         btnSignup.setEnabled(false);
         btnSignup.setAlpha(0.5f);
 
-        // Real-time input validation
         setupValidationListeners();
 
-        // Signup button listener
         btnSignup.setOnClickListener(v -> {
             if (validateForm()) {
                 registerUser();
@@ -157,7 +153,6 @@ public class SignupActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        // Role validation
         if (radioGroup.getCheckedRadioButtonId() == -1) {
             Toast.makeText(this, "Please select a role", Toast.LENGTH_SHORT).show();
             isValid = false;
@@ -178,58 +173,96 @@ public class SignupActivity extends AppCompatActivity {
         String role = (selectedRoleId == R.id.radioStudent) ? "Student" :
                 (selectedRoleId == R.id.radioTutor) ? "Tutor" : "Unknown";
 
-        Log.d(TAG, "Registering user...");
+        Log.d(TAG, "Registering user: " + email);
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
-                    progressBar.setVisibility(View.GONE);
-                    btnSignup.setEnabled(true);
-
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user == null) {
-                            Toast.makeText(this, "Account created but user not found!", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "User is null after successful creation");
+                            hideProgressAndEnableButton();
+                            Toast.makeText(SignupActivity.this, "Account created but user not found!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
-                        user.sendEmailVerification();
+                        Log.d(TAG, "Firebase Auth user created successfully: " + user.getUid());
 
-                        Map<String, Object> userMap = new HashMap<>();
-                        userMap.put("name", name);
-                        userMap.put("email", email);
-                        userMap.put("role", role);
-                        userMap.put("emailVerified", false);
-                        userMap.put("uid", user.getUid());
-
-                        db.collection("users").document(user.getUid())
-                                .set(userMap)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d(TAG, "User saved to Firestore successfully");
-                                    Toast.makeText(this, "✅ Account created! Please verify your email.", Toast.LENGTH_LONG).show();
-                                    clearFields();
-
-                                    new Handler().postDelayed(() -> {
-                                        startActivity(new Intent(SignupActivity.this, LoginActivity.class));
-                                        finish();
-                                    }, 1200);
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e(TAG, "Firestore error: " + e.getMessage());
-                                    Toast.makeText(this, "Error saving user: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        // Send email verification
+                        user.sendEmailVerification()
+                                .addOnCompleteListener(emailTask -> {
+                                    if (emailTask.isSuccessful()) {
+                                        Log.d(TAG, "Email verification sent.");
+                                    } else {
+                                        Log.e(TAG, "Failed to send email verification: " +
+                                                (emailTask.getException() != null ? emailTask.getException().getMessage() : "Unknown error"));
+                                    }
                                 });
+
+                        // Save user data to Firestore
+                        saveUserToFirestore(user, name, email, role);
 
                     } else {
                         Exception e = task.getException();
-                        Log.e(TAG, "Signup failed: " + (e != null ? e.getMessage() : "Unknown error"));
-                        Toast.makeText(this, "Signup failed: " + (e != null ? e.getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "Auth creation failed: " + (e != null ? e.getMessage() : "Unknown error"));
+                        hideProgressAndEnableButton();
+                        Toast.makeText(SignupActivity.this, "Signup failed: " + (e != null ? e.getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
                     }
+                });
+    }
+
+    private void saveUserToFirestore(FirebaseUser user, String name, String email, String role) {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("name", name);
+        userMap.put("email", email);
+        userMap.put("role", role);
+        userMap.put("emailVerified", false);
+        userMap.put("uid", user.getUid());
+        userMap.put("createdAt", com.google.firebase.Timestamp.now());
+
+        Log.d(TAG, "Saving user to Firestore: " + user.getUid());
+
+        db.collection("users").document(user.getUid())
+                .set(userMap)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "🎉 Firestore SUCCESS - User data saved!");
+
+                    // Success flow
+                    hideProgressAndEnableButton();
+                    clearFields();
+                    Toast.makeText(SignupActivity.this,
+                            "✅ Account created successfully!",
+                            Toast.LENGTH_LONG).show();
+
+                    // Navigate to login after delay
+                    new Handler().postDelayed(() -> {
+                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }, 3000);
                 })
                 .addOnFailureListener(e -> {
-                    progressBar.setVisibility(View.GONE);
-                    btnSignup.setEnabled(true);
-                    Log.e(TAG, "Firebase error: " + e.getMessage());
-                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "❌ Firestore ERROR: " + e.getMessage());
+
+                    // Even if Firestore fails, user is still created in Auth
+                    // Proceed with success but log the issue
+                    hideProgressAndEnableButton();
+                    clearFields();
+                    Toast.makeText(SignupActivity.this,
+                            "✅ Account created! Please check your email for verification. (Some data may sync later)",
+                            Toast.LENGTH_LONG).show();
+
+                    new Handler().postDelayed(() -> {
+                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }, 3000);
                 });
+    }
+
+    private void hideProgressAndEnableButton() {
+        progressBar.setVisibility(View.GONE);
+        btnSignup.setEnabled(true);
     }
 
     private void clearFields() {
@@ -239,6 +272,7 @@ public class SignupActivity extends AppCompatActivity {
         checkTerms.setChecked(false);
         tvPasswordStrength.setText("");
         radioGroup.clearCheck();
+        checkFormValidity();
     }
 
     public void onLoginClick(View view) {

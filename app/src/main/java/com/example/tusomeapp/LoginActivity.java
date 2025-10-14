@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                         new Handler().postDelayed(() -> {
                             startActivity(new Intent(this, DashboardActivity.class));
                             finish();
-                        }, 1000);
+                        }, 2000);
                     } else {
                         Toast.makeText(this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
