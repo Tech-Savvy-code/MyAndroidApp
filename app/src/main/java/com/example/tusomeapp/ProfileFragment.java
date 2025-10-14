@@ -8,7 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log; // ADD THIS IMPORT
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +31,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
 
-    private static final String TAG = "ProfileFragment"; // ADD TAG FOR LOGGING
+    private static final String TAG = "ProfileFragment";
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -54,6 +54,14 @@ public class ProfileFragment extends Fragment {
         loadProfilePicture();
 
         return view;
+    }
+
+    // ✅ ADD THIS: Refresh profile when fragment becomes visible
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserProfileData();
+        Log.d(TAG, "ProfileFragment resumed - refreshing data");
     }
 
     private void initializeViews(View view) {
@@ -99,6 +107,8 @@ public class ProfileFragment extends Fragment {
 
         if (!isLoggedIn) {
             Toast.makeText(getContext(), "Please log in to view profile", Toast.LENGTH_SHORT).show();
+            // Clear profile data if not logged in
+            clearProfileData();
             return;
         }
 
@@ -128,6 +138,16 @@ public class ProfileFragment extends Fragment {
         setDemoStatistics();
 
         Log.d(TAG, "✅ Profile loaded: " + userName + " | " + userEmail + " | " + userRole);
+    }
+
+    // ✅ ADD THIS: Clear profile data when not logged in
+    private void clearProfileData() {
+        userNameText.setText("User Name");
+        userEmailText.setText("user@example.com");
+        userRoleText.setText("Student");
+        memberSinceText.setText("Member since: --");
+        userIdText.setText("ID: --");
+        accountStatusText.setText("Account Status: Not logged in");
     }
 
     private String generateUserId(String email) {
@@ -210,8 +230,14 @@ public class ProfileFragment extends Fragment {
     private void logoutUser() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("isLoggedIn", false);
+        editor.clear(); // ✅ Clear all user data on logout
         editor.apply();
+
+        // Also delete profile picture
+        File imageFile = new File(requireContext().getFilesDir(), "profile_picture.jpg");
+        if (imageFile.exists()) {
+            imageFile.delete();
+        }
 
         // Navigate to login screen
         Intent intent = new Intent(requireActivity(), LoginActivity.class);
