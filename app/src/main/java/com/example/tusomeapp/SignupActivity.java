@@ -1,6 +1,7 @@
 package com.example.tusomeapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -199,7 +200,7 @@ public class SignupActivity extends AppCompatActivity {
                                     }
                                 });
 
-                        // Save user data to Firestore
+                        // Save user data to Firestore AND SharedPreferences
                         saveUserToFirestore(user, name, email, role);
 
                     } else {
@@ -227,6 +228,9 @@ public class SignupActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "🎉 Firestore SUCCESS - User data saved!");
 
+                    // ✅ SAVE TO SHAREDPREFERENCES FOR IMMEDIATE PROFILE ACCESS
+                    saveUserToSharedPreferences(name, email, role, user.getUid());
+
                     // Success flow
                     hideProgressAndEnableButton();
                     clearFields();
@@ -244,12 +248,13 @@ public class SignupActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "❌ Firestore ERROR: " + e.getMessage());
 
-                    // Even if Firestore fails, user is still created in Auth
-                    // Proceed with success but log the issue
+                    // ✅ STILL SAVE TO SHAREDPREFERENCES EVEN IF FIRESTORE FAILS
+                    saveUserToSharedPreferences(name, email, role, user.getUid());
+
                     hideProgressAndEnableButton();
                     clearFields();
                     Toast.makeText(SignupActivity.this,
-                            "✅ Account created! Please check your email for verification. (Some data may sync later)",
+                            "✅ Account created! Please check your email for verification.",
                             Toast.LENGTH_LONG).show();
 
                     new Handler().postDelayed(() -> {
@@ -258,6 +263,22 @@ public class SignupActivity extends AppCompatActivity {
                         finish();
                     }, 3000);
                 });
+    }
+
+    // ✅ NEW METHOD: Save user data to SharedPreferences for immediate Profile access
+    private void saveUserToSharedPreferences(String name, String email, String role, String uid) {
+        SharedPreferences prefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString("userName", name);
+        editor.putString("userEmail", email);
+        editor.putString("userRole", role);
+        editor.putString("userId", uid);
+        editor.putLong("joinDate", System.currentTimeMillis());
+        editor.putBoolean("isLoggedIn", true); // Mark user as logged in
+
+        editor.apply();
+        Log.d(TAG, "✅ User data saved to SharedPreferences: " + name);
     }
 
     private void hideProgressAndEnableButton() {

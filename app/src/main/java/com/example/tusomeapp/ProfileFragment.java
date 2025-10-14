@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log; // ADD THIS IMPORT
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
+
+    private static final String TAG = "ProfileFragment"; // ADD TAG FOR LOGGING
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -91,10 +94,19 @@ public class ProfileFragment extends Fragment {
     private void loadUserProfileData() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
-        // Load user data from SharedPreferences (set during signup)
+        // Check if user is logged in
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+
+        if (!isLoggedIn) {
+            Toast.makeText(getContext(), "Please log in to view profile", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Load user data from SharedPreferences (set during signup/login)
         String userName = prefs.getString("userName", "User Name");
         String userEmail = prefs.getString("userEmail", "user@example.com");
         String userRole = prefs.getString("userRole", "Student");
+        String userId = prefs.getString("userId", "TUS001");
         long joinDate = prefs.getLong("joinDate", System.currentTimeMillis());
 
         // Update UI with user data
@@ -104,14 +116,18 @@ public class ProfileFragment extends Fragment {
 
         // Format join date
         String formattedDate = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(new Date(joinDate));
-        memberSinceText.setText(formattedDate);
+        memberSinceText.setText("Member since: " + formattedDate);
 
-        // Generate user ID from email
-        String userId = generateUserId(userEmail);
-        userIdText.setText(userId);
+        // Set user ID
+        userIdText.setText("ID: " + userId);
+
+        // Set account status based on verification (you can enhance this later)
+        accountStatusText.setText("Account Status: Active");
 
         // Set demo statistics (you can replace with real data later)
         setDemoStatistics();
+
+        Log.d(TAG, "✅ Profile loaded: " + userName + " | " + userEmail + " | " + userRole);
     }
 
     private String generateUserId(String email) {
