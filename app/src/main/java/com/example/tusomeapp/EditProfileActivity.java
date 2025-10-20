@@ -15,6 +15,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,7 +42,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private StorageReference storageRef;
 
-    // Image picker
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
@@ -88,7 +89,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         btnSave.setOnClickListener(v -> {
             if (validateFields()) {
-                updateProfile();
+                verifyAndUpdateProfile();
             } else {
                 Toast.makeText(this, "⚠️ Please correct highlighted errors", Toast.LENGTH_SHORT).show();
             }
@@ -115,10 +116,7 @@ public class EditProfileActivity extends AppCompatActivity {
             if (documentSnapshot.exists()) {
                 editName.setText(documentSnapshot.getString("name"));
                 String imageUrl = documentSnapshot.getString("imageUrl");
-                if (imageUrl != null && !imageUrl.isEmpty()) {
-                    // Use your preferred image loader (e.g. Glide)
-                    // Glide.with(this).load(imageUrl).into(profileImage);
-                }
+                // If you use Glide: Glide.with(this).load(imageUrl).into(profileImage);
             }
         });
     }
@@ -143,7 +141,6 @@ public class EditProfileActivity extends AppCompatActivity {
         String newPass = editNewPassword.getText().toString().trim();
         boolean valid = true;
 
-        // Name
         if (TextUtils.isEmpty(name)) {
             editName.setError("Full name is required");
             valid = false;
@@ -154,7 +151,6 @@ public class EditProfileActivity extends AppCompatActivity {
             editName.setError(null);
         }
 
-        // Email
         if (TextUtils.isEmpty(email)) {
             editEmail.setError("Email is required");
             valid = false;
@@ -165,72 +161,80 @@ public class EditProfileActivity extends AppCompatActivity {
             editEmail.setError(null);
         }
 
-        // Password validation
-        if (!TextUtils.isEmpty(oldPass) || !TextUtils.isEmpty(newPass)) {
-            if (TextUtils.isEmpty(oldPass)) {
-                editOldPassword.setError("Old password required");
-                valid = false;
-            } else {
-                editOldPassword.setError(null);
-            }
+        if (TextUtils.isEmpty(oldPass)) {
+            editOldPassword.setError("Old password required");
+            valid = false;
+        } else {
+            editOldPassword.setError(null);
+        }
 
-            if (TextUtils.isEmpty(newPass)) {
-                editNewPassword.setError("New password required");
-                valid = false;
-            } else if (newPass.length() < 6) {
-                editNewPassword.setError("Min 6 characters");
-                valid = false;
-            } else {
-                editNewPassword.setError(null);
-            }
+        if (TextUtils.isEmpty(newPass)) {
+            editNewPassword.setError("New password required");
+            valid = false;
+        } else if (newPass.length() < 6) {
+            editNewPassword.setError("Min 6 characters");
+            valid = false;
+        } else {
+            editNewPassword.setError(null);
         }
 
         btnSave.setEnabled(valid);
         return valid;
     }
 
-    private void updateProfile() {
+    // Step 1: Confirm old password before updating anything
+    private void verifyAndUpdateProfile() {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        String oldPass = editOldPassword.getText().toString().trim();
+        String currentEmail = user.getEmail();
+        AuthCredential credential = EmailAuthProvider.getCredential(currentEmail, oldPass);
+
         progressDialog.show();
 
-        String name = editName.getText().toString().trim();
-        String email = editEmail.getText().toString().trim();
-        String oldPass = editOldPassword.getText().toString().trim();
-        String newPass = editNewPassword.getText().toString().trim();
-
-        // Update email if changed
-        user.updateEmail(email).addOnSuccessListener(aVoid -> {
-            // Update password if provided
-            if (!TextUtils.isEmpty(oldPass) && !TextUtils.isEmpty(newPass)) {
-                user.updatePassword(newPass).addOnSuccessListener(aVoid1 -> {
-                    uploadProfileData(user.getUid(), name, email);
-                }).addOnFailureListener(e -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(this, "Password update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
-            } else {
-                uploadProfileData(user.getUid(), name, email);
-            }
+        // Reauthenticate first
+        user.reauthenticate(credential).addOnSuccessListener(aVoid -> {
+            updateFirebaseAccount(user);
         }).addOnFailureListener(e -> {
             progressDialog.dismiss();
-            Toast.makeText(this, "Email update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "❌ Old password incorrect. Please try again.", Toast.LENGTH_LONG).show();
         });
     }
 
+    //  Step 2: Update email & password after reauthentication
+    private void updateFirebaseAccount(FirebaseUser user) {
+        String newEmail = editEmail.getText().toString().trim();
+        String newPass = editNewPassword.getText().toString().trim();
+        String name = editName.getText().toString().trim();
+
+        // Update email
+        user.updateEmail(newEmail).addOnSuccessListener(aVoid -> {
+            // Update password
+            user.updatePassword(newPass).addOnSuccessListener(aVoid2 -> {
+                uploadProfileData(user.getUid(), name, newEmail);
+            }).addOnFailureListener(e -> {
+                progressDialog.dismiss();
+                Toast.makeText(this, "⚠️ Password update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            });
+        }).addOnFailureListener(e -> {
+            progressDialog.dismiss();
+            Toast.makeText(this, "⚠️ Email update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        });
+    }
+
+    //  Step 3: Upload image (optional) and save to Firestore
     private void uploadProfileData(String uid, String name, String email) {
         if (imageUri != null) {
             StorageReference fileRef = storageRef.child(uid + ".jpg");
-            UploadTask uploadTask = fileRef.putFile(imageUri);
-
-            uploadTask.addOnSuccessListener(taskSnapshot ->
-                    fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        saveToFirestore(uid, name, email, uri.toString());
-                    })).addOnFailureListener(e -> {
+            fileRef.putFile(imageUri).addOnSuccessListener(taskSnapshot ->
+                    fileRef.getDownloadUrl().addOnSuccessListener(uri ->
+                            saveToFirestore(uid, name, email, uri.toString())
+                    )
+            ).addOnFailureListener(e -> {
                 progressDialog.dismiss();
                 Toast.makeText(this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             });
@@ -249,12 +253,12 @@ public class EditProfileActivity extends AppCompatActivity {
                 .set(userMap)
                 .addOnSuccessListener(unused -> {
                     progressDialog.dismiss();
-                    Toast.makeText(this, "✅ Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, " Profile updated successfully!", Toast.LENGTH_SHORT).show();
                     finish();
                 })
                 .addOnFailureListener(e -> {
                     progressDialog.dismiss();
-                    Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "⚠️ Firestore update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 }
