@@ -57,4 +57,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:25.0.0")
     implementation("com.google.firebase:firebase-storage:21.0.0")
     implementation("com.google.firebase:firebase-auth:22.3.1")
+    // edit profile
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 }
