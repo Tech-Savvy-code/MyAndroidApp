@@ -1,18 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base Theme (Light Mode Only) -->
-    <style name="Base.Theme.TusomeApp" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Force colors to prevent dark mode -->
+    <!-- ✅ Base Theme -->
+    <style name="Base.Theme.TusomeApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Brand colors -->
         <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/primary_color</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="android:windowBackground">@color/white</item>
+        <item name="colorSecondary">@color/primary_color</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Background and surfaces -->
+        <item name="android:windowBackground">@color/background_light</item>
+        <item name="android:statusBarColor">@color/primary_color</item>
+        <item name="android:navigationBarColor">@color/primary_color</item>
+
+        <!-- Toolbar text and icon color -->
+        <item name="actionBarTheme">@style/ToolbarOverlay</item>
+
+        <!-- Disable dark mode -->
+        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <!-- App Theme -->
+    <!-- ✅ Main Theme -->
     <style name="Theme.TusomeApp" parent="Base.Theme.TusomeApp" />
 
-    <!-- Curved TextInputLayout (For Login & Signup fields) -->
+    <!-- ✅ Toolbar Overlay (ensures white icons/text) -->
+    <style name="ToolbarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/white</item>
+    </style>
+
+    <!-- ✅ Curved TextInputLayout (used in login/signup) -->
     <style name="CurvedTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundMode">outline</item>
         <item name="boxCornerRadiusTopStart">24dp</item>
@@ -26,10 +48,10 @@
         <item name="android:textColorHint">@color/gray</item>
     </style>
 
-    <!-- Alternative AppTheme (legacy support) -->
+    <!-- ✅ Fallback legacy support -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar" />
 
-    <!-- Meet Control Button -->
+    <!-- ✅ Meet Control Buttons -->
     <style name="MeetControlButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>
@@ -38,14 +60,12 @@
         <item name="android:tint">@color/white</item>
     </style>
 
-    <!-- Meet End Call Button -->
     <style name="MeetEndCallButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>
         <item name="android:background">@drawable/meet_end_call_button_bg</item>
         <item name="android:scaleType">centerInside</item>
         <item name="android:tint">@color/white</item>
-        <item name="android:textColorHint">@color/gray</item>
     </style>
 
 </resources>

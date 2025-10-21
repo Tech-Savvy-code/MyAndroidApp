@@ -32,7 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
-    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int PICK_IMAGE_REQUEST =  1;
 
     private CircleImageView profileImage;
     private ImageButton editProfileImageButton;
@@ -112,9 +112,9 @@ public class ProfileFragment extends Fragment {
         userRoleText.setText(userRole);
 
         String formattedDate = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(new Date(joinDate));
-        memberSinceText.setText("Member since: " + formattedDate);
-        userIdText.setText("ID: " + userId);
-        accountStatusText.setText("Account Status: Active");
+        memberSinceText.setText(formattedDate);
+        userIdText.setText(userId);
+        accountStatusText.setText("Verified");
 
         setDemoStatistics();
 
@@ -125,9 +125,9 @@ public class ProfileFragment extends Fragment {
         userNameText.setText("User Name");
         userEmailText.setText("user@example.com");
         userRoleText.setText("Student");
-        memberSinceText.setText("Member since: --");
-        userIdText.setText("ID: --");
-        accountStatusText.setText("Account Status: Not logged in");
+        memberSinceText.setText("--");
+        userIdText.setText("--");
+        accountStatusText.setText("Not logged in");
         totalSessionsText.setText("0");
         learningHoursText.setText("0h");
         successRateText.setText("0%");
@@ -186,13 +186,14 @@ public class ProfileFragment extends Fragment {
         startActivity(intent);
     }
 
-
     private void showChangePasswordDialog() {
-        Toast.makeText(getContext(), "Change Password feature coming soon!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+        startActivity(intent);
     }
 
     private void openSettings() {
-        Toast.makeText(getContext(), "Settings feature coming soon!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void logoutUser() {
