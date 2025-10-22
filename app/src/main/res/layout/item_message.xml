@@ -65,7 +65,6 @@
             android:textSize="11sp"
             android:alpha="0.8"
             android:layout_marginTop="4dp" />
-        <include layout="@layout/layout_no_internet" />
 
     </LinearLayout>
 

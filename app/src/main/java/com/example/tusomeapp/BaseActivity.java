@@ -1,5 +1,6 @@
 package com.example.tusomeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,23 +19,31 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Automatically check and show/hide No Internet layout
-        View view = findViewById(android.R.id.content);
-        noInternetLayout = view.findViewById(R.id.noInternetLayout);
-
         checkInternetAndUpdateUI();
     }
 
     private void checkInternetAndUpdateUI() {
         boolean isConnected = NetworkUtils.isNetworkAvailable(this);
 
-        if (noInternetLayout != null) {
-            noInternetLayout.setVisibility(isConnected ? View.GONE : View.VISIBLE);
+        View rootView = findViewById(android.R.id.content);
+        noInternetLayout = rootView.findViewById(R.id.noInternetLayout);
 
-            if (!isConnected) {
+        if (noInternetLayout != null) {
+            if (isConnected) {
+                noInternetLayout.setVisibility(View.GONE);
+            } else {
+                noInternetLayout.setVisibility(View.VISIBLE);
+
                 Button retryButton = noInternetLayout.findViewById(R.id.btnRetry);
                 retryButton.setOnClickListener(v -> checkInternetAndUpdateUI());
+            }
+        } else {
+            // If layout not found, and not on MainActivity, go back to it
+            if (!isConnected && !(this instanceof MainActivity)) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
             }
         }
     }

@@ -57,6 +57,5 @@
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/bottom_nav_colors"
         app:itemTextColor="@color/bottom_nav_colors" />
-    <include layout="@layout/layout_no_internet" />
 
 </LinearLayout>

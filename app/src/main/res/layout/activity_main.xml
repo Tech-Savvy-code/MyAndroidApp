@@ -1,98 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background">
+    tools:context=".MainActivity">
 
-    <!-- Top Image -->
-    <ImageView
-        android:id="@+id/topImage"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/black"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:src="@drawable/lvlogo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints,ImageContrastCheck"
-        tools:src="@drawable/lvlogo" />
+    <!-- Normal Main Screen Layout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_background">
 
-    <!-- Circular Progress Bar (Custom View) -->
-    <com.example.tusomeapp.CircularProgressBar
-        android:id="@+id/circularProgressBar"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        app:backgroundProgressColor="@color/progress_background"
-        app:layout_constraintTop_toBottomOf="@id/topImage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.2"
-        app:progressColor="@color/progress_color"
-        app:progressWidth="8dp" />
+        <!-- Top Image -->
+        <ImageView
+            android:id="@+id/topImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/black"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:src="@drawable/lvlogo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints,ImageContrastCheck" />
 
-    <!-- Circular ImageView -->
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/logo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/mortarboard"
-        android:background="@drawable/circular_background"
-        app:civ_border_width="0dp"
-        app:layout_constraintTop_toTopOf="@id/circularProgressBar"
-        app:layout_constraintBottom_toBottomOf="@id/circularProgressBar"
-        app:layout_constraintStart_toStartOf="@id/circularProgressBar"
-        app:layout_constraintEnd_toEndOf="@id/circularProgressBar" />
+        <!-- Circular Progress Bar -->
+        <com.example.tusomeapp.CircularProgressBar
+            android:id="@+id/circularProgressBar"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:backgroundProgressColor="@color/progress_background"
+            app:layout_constraintTop_toBottomOf="@id/topImage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.2"
+            app:progressColor="@color/progress_color"
+            app:progressWidth="8dp" />
 
-    <!-- Welcome Text -->
-    <TextView
-        android:id="@+id/welcome_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome To Tutor App"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:alpha="0"
-        app:layout_constraintTop_toBottomOf="@id/circularProgressBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"
-        tools:ignore="HardcodedText" />
+        <!-- Circular Image -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/logo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/mortarboard"
+            android:background="@drawable/circular_background"
+            app:civ_border_width="0dp"
+            app:layout_constraintTop_toTopOf="@id/circularProgressBar"
+            app:layout_constraintBottom_toBottomOf="@id/circularProgressBar"
+            app:layout_constraintStart_toStartOf="@id/circularProgressBar"
+            app:layout_constraintEnd_toEndOf="@id/circularProgressBar" />
 
-    <!-- Additional Text -->
-    <TextView
-        android:id="@+id/additional_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="A place to explore and enjoy your studies"
-        android:textColor="#616161"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcome_text"
-        tools:ignore="HardcodedText" />
+        <!-- Welcome Text -->
+        <TextView
+            android:id="@+id/welcome_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome To Tutor App"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:alpha="0"
+            app:layout_constraintTop_toBottomOf="@id/circularProgressBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp" />
 
-    <!-- Skip Button -->
-    <Button
-        android:id="@+id/skipButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Skip"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/primary_color"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="HardcodedText" />
-    <include layout="@layout/layout_no_internet" />
+        <!-- Additional Text -->
+        <TextView
+            android:id="@+id/additional_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="A place to explore and enjoy your studies"
+            android:textColor="#616161"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/welcome_text" />
 
+        <!-- Skip Button -->
+        <Button
+            android:id="@+id/skipButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Skip"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/primary_color"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- No Internet Layout (only in Main Activity) -->
+    <include
+        android:id="@+id/noInternetLayout"
+        layout="@layout/layout_no_internet"
+        android:visibility="gone" />
+
+</FrameLayout>

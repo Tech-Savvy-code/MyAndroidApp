@@ -185,7 +185,6 @@
             android:src="@drawable/ic_send"
             app:tint="@android:color/white"
             tools:ignore="SpeakableTextPresentCheck" />
-        <include layout="@layout/layout_no_internet" />
 
     </LinearLayout>
 
