@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessagesFragment extends Fragment {
+public class MessagesFragment extends BaseFragment {
 
     private RecyclerView messagesRecyclerView;
     private EditText messageInput;

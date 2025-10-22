@@ -230,6 +230,8 @@
                     android:textColor="@color/white"
                     android:visibility="gone"
                     android:layout_marginTop="12dp"/>
+                <include layout="@layout/layout_no_internet" />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

@@ -482,6 +482,8 @@
                         android:textColor="@color/red"
                         android:textSize="16sp"
                         android:textStyle="bold" />
+                    <include layout="@layout/layout_no_internet" />
+
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

@@ -29,7 +29,7 @@ import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends BaseFragment {
 
     private static final String TAG = "ProfileFragment";
     private static final int PICK_IMAGE_REQUEST =  1;

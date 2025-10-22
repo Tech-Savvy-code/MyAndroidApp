@@ -92,5 +92,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="HardcodedText" />
+    <include layout="@layout/layout_no_internet" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

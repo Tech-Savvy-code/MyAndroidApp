@@ -16,7 +16,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import java.util.Locale;
 
-public class SessionsFragment extends Fragment {
+public class SessionsFragment extends BaseFragment{
 
     private TextView tvSessionCode, tvCallStatus, tvRecordingStatus;
     private ImageButton btnMic, btnCamera, btnScreenShare, btnRecord, btnEndCall;

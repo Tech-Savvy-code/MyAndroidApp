@@ -223,5 +223,7 @@
                 android:textColor="@color/white"
                 android:textSize="12sp" />
         </LinearLayout>
+        <include layout="@layout/layout_no_internet" />
+
     </LinearLayout>
 </RelativeLayout>

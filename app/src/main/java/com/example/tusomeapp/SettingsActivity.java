@@ -16,7 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity{
 
     private SwitchCompat darkModeSwitch, notificationSwitch;
     private SharedPreferences prefs;

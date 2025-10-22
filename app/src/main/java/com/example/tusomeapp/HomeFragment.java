@@ -20,7 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import java.util.Random;
  
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
 
     private TextView tvWelcome, tvSessionCode, tvConnectionStatus;
     private Button btnCreateSession, btnJoinSession, btnStartCall, btnBackToDashboard;

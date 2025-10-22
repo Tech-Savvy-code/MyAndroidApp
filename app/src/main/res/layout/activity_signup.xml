@@ -192,5 +192,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:visibility="gone" />
+        <include layout="@layout/layout_no_internet" />
+
     </LinearLayout>
 </ScrollView>
