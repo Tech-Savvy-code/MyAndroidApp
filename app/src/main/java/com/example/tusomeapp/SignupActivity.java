@@ -29,7 +29,7 @@ public class SignupActivity extends BaseActivity {
     private Button btnSignup;
     private ProgressBar progressBar;
     private CheckBox checkTerms;
-    private TextView tvPasswordStrength;
+    private TextView tvPasswordStrength, tvTerms;
     private RadioGroup radioGroup;
 
     private FirebaseAuth mAuth;
@@ -53,11 +53,18 @@ public class SignupActivity extends BaseActivity {
         checkTerms = findViewById(R.id.checkTerms);
         tvPasswordStrength = findViewById(R.id.tvPasswordStrength);
         radioGroup = findViewById(R.id.radioGroup);
+        tvTerms = findViewById(R.id.tvTerms); // NEW
 
         btnSignup.setEnabled(false);
         btnSignup.setAlpha(0.5f);
 
+        // Disable checkbox until user reads Terms
+        checkTerms.setEnabled(false);
+
         setupValidationListeners();
+
+        // When user clicks Terms text, show dialog
+        tvTerms.setOnClickListener(v -> showTermsDialog());
 
         btnSignup.setOnClickListener(v -> {
             if (validateForm()) {
@@ -77,6 +84,7 @@ public class SignupActivity extends BaseActivity {
 
         etName.addTextChangedListener(validationWatcher);
         etEmail.addTextChangedListener(validationWatcher);
+
         etPassword.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -86,14 +94,23 @@ public class SignupActivity extends BaseActivity {
             @Override public void afterTextChanged(Editable s) {}
         });
 
-        checkTerms.setOnCheckedChangeListener((buttonView, isChecked) -> checkFormValidity());
+        // Prevent manual checking before reading Terms
+        checkTerms.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!checkTerms.isEnabled()) {
+                checkTerms.setChecked(false);
+                Toast.makeText(this, "Please read the Terms and Conditions first", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            checkFormValidity();
+        });
     }
 
     private void checkFormValidity() {
         boolean isValid = !etName.getText().toString().trim().isEmpty()
                 && Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString().trim()).matches()
                 && etPassword.getText().toString().trim().length() >= 6
-                && checkTerms.isChecked();
+                && checkTerms.isChecked()
+                && radioGroup.getCheckedRadioButtonId() != -1;
 
         btnSignup.setEnabled(isValid);
         btnSignup.setAlpha(isValid ? 1f : 0.5f);
@@ -136,7 +153,7 @@ public class SignupActivity extends BaseActivity {
             etEmail.setError("Email is required");
             isValid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Enter a valid email address");
+            etEmail.setError("Enter a valid email");
             isValid = false;
         }
 
@@ -150,7 +167,7 @@ public class SignupActivity extends BaseActivity {
         }
 
         if (!checkTerms.isChecked()) {
-            Toast.makeText(this, "Please accept terms and conditions", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please accept Terms and Conditions", Toast.LENGTH_SHORT).show();
             isValid = false;
         }
 
@@ -160,6 +177,37 @@ public class SignupActivity extends BaseActivity {
         }
 
         return isValid;
+    }
+
+    // TERMS & CONDITIONS POPUP
+    private void showTermsDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Terms and Conditions");
+
+        builder.setMessage(
+                "Welcome to Tusome.\n\n" +
+                        "By creating an account you agree that:\n\n" +
+                        "• You will enter accurate personal details.\n" +
+                        "• You will respect tutors and fellow students.\n" +
+                        "• You will not upload harmful or illegal content.\n" +
+                        "• Any misconduct can lead to account suspension.\n" +
+                        "• Some activity may be monitored to improve learning.\n\n" +
+                        "Press ACCEPT to continue."
+        );
+
+        builder.setPositiveButton("ACCEPT", (dialog, which) -> {
+            checkTerms.setEnabled(true);
+            checkTerms.setChecked(true);
+            checkFormValidity();
+        });
+
+        builder.setNegativeButton("DECLINE", (dialog, which) -> {
+            checkTerms.setEnabled(false);
+            checkTerms.setChecked(false);
+            checkFormValidity();
+        });
+
+        builder.show();
     }
 
     private void registerUser() {
@@ -174,45 +222,33 @@ public class SignupActivity extends BaseActivity {
         String role = (selectedRoleId == R.id.radioStudent) ? "Student" :
                 (selectedRoleId == R.id.radioTutor) ? "Tutor" : "Unknown";
 
-        Log.d(TAG, "Registering user: " + email);
+        Log.d(TAG, "Registering: " + email);
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user == null) {
-                            Log.e(TAG, "User is null after successful creation");
+                            Log.e(TAG, "User null after registration");
                             hideProgressAndEnableButton();
-                            Toast.makeText(SignupActivity.this, "Account created but user not found!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
-                        Log.d(TAG, "Firebase Auth user created successfully: " + user.getUid());
+                        user.sendEmailVerification();
 
-                        // Send email verification
-                        user.sendEmailVerification()
-                                .addOnCompleteListener(emailTask -> {
-                                    if (emailTask.isSuccessful()) {
-                                        Log.d(TAG, "Email verification sent.");
-                                    } else {
-                                        Log.e(TAG, "Failed to send email verification: " +
-                                                (emailTask.getException() != null ? emailTask.getException().getMessage() : "Unknown error"));
-                                    }
-                                });
-
-                        // Save user data to Firestore AND SharedPreferences
                         saveUserToFirestore(user, name, email, role);
 
                     } else {
                         Exception e = task.getException();
-                        Log.e(TAG, "Auth creation failed: " + (e != null ? e.getMessage() : "Unknown error"));
+                        Log.e(TAG, "Signup failed: " + (e != null ? e.getMessage() : "Unknown error"));
                         hideProgressAndEnableButton();
-                        Toast.makeText(SignupActivity.this, "Signup failed: " + (e != null ? e.getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Signup failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
     private void saveUserToFirestore(FirebaseUser user, String name, String email, String role) {
+
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("name", name);
         userMap.put("email", email);
@@ -221,51 +257,33 @@ public class SignupActivity extends BaseActivity {
         userMap.put("uid", user.getUid());
         userMap.put("createdAt", com.google.firebase.Timestamp.now());
 
-        Log.d(TAG, "Saving user to Firestore: " + user.getUid());
-
         db.collection("users").document(user.getUid())
                 .set(userMap)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "🎉 Firestore SUCCESS - User data saved!");
-
-                    // ✅ SAVE TO SHAREDPREFERENCES FOR IMMEDIATE PROFILE ACCESS
                     saveUserToSharedPreferences(name, email, role, user.getUid());
-
-                    // Success flow
                     hideProgressAndEnableButton();
                     clearFields();
-                    Toast.makeText(SignupActivity.this,
-                            "✅ Account created successfully!",
-                            Toast.LENGTH_LONG).show();
 
-                    // Navigate to login after delay
+                    Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
+
                     new Handler().postDelayed(() -> {
-                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(this, LoginActivity.class));
                         finish();
                     }, 3000);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Firestore ERROR: " + e.getMessage());
-
-                    // ✅ STILL SAVE TO SHAREDPREFERENCES EVEN IF FIRESTORE FAILS
                     saveUserToSharedPreferences(name, email, role, user.getUid());
-
                     hideProgressAndEnableButton();
                     clearFields();
-                    Toast.makeText(SignupActivity.this,
-                            "✅ Account created! Please check your email for verification.",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Account created! Verify your email.", Toast.LENGTH_LONG).show();
 
                     new Handler().postDelayed(() -> {
-                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(this, LoginActivity.class));
                         finish();
                     }, 3000);
                 });
     }
 
-    // ✅ NEW METHOD: Save user data to SharedPreferences for immediate Profile access
     private void saveUserToSharedPreferences(String name, String email, String role, String uid) {
         SharedPreferences prefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -274,11 +292,10 @@ public class SignupActivity extends BaseActivity {
         editor.putString("userEmail", email);
         editor.putString("userRole", role);
         editor.putString("userId", uid);
+        editor.putBoolean("isLoggedIn", true);
         editor.putLong("joinDate", System.currentTimeMillis());
-        editor.putBoolean("isLoggedIn", true); // Mark user as logged in
 
         editor.apply();
-        Log.d(TAG, "✅ User data saved to SharedPreferences: " + name);
     }
 
     private void hideProgressAndEnableButton() {

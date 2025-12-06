@@ -152,14 +152,30 @@
                 android:textColor="@color/black" />
         </RadioGroup>
 
-        <!-- Terms Checkbox -->
-        <CheckBox
-            android:id="@+id/checkTerms"
+        <!-- Terms & Conditions (Clickable Text + Disabled Checkbox) -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="I agree to Terms and Conditions"
-            android:textColor="@color/black" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/checkTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false" />
+
+            <TextView
+                android:id="@+id/tvTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I agree to Terms and Conditions"
+                android:textColor="@color/primary_color"
+                android:textStyle="bold"
+                android:paddingStart="8dp" />
+        </LinearLayout>
+
 
         <!-- Signup Button -->
         <Button

@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.google.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -53,7 +54,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:2.6.0")
     implementation("androidx.navigation:navigation-ui:2.6.0")
 
-    // ✅ Firebase (Using BoM for version management)
+    // Firebase (Using BoM for version management)
     implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
 
     // Firebase Modules
@@ -62,7 +63,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-database")
 
-    // ✅ Image Loading Library (recommended for profile image)
+    //  Image Loading Library (recommended for profile image)
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
