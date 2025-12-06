@@ -1,17 +1,21 @@
 package com.example.tusomeapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,7 +57,7 @@ public class SignupActivity extends BaseActivity {
         checkTerms = findViewById(R.id.checkTerms);
         tvPasswordStrength = findViewById(R.id.tvPasswordStrength);
         radioGroup = findViewById(R.id.radioGroup);
-        tvTerms = findViewById(R.id.tvTerms); // NEW
+        tvTerms = findViewById(R.id.tvTerms);
 
         btnSignup.setEnabled(false);
         btnSignup.setAlpha(0.5f);
@@ -63,7 +67,7 @@ public class SignupActivity extends BaseActivity {
 
         setupValidationListeners();
 
-        // When user clicks Terms text, show dialog
+        // When user clicks Terms text → show beautiful dialog
         tvTerms.setOnClickListener(v -> showTermsDialog());
 
         btnSignup.setOnClickListener(v -> {
@@ -179,12 +183,23 @@ public class SignupActivity extends BaseActivity {
         return isValid;
     }
 
-    // TERMS & CONDITIONS POPUP
+    // BEAUTIFUL CUSTOM TERMS POPUP
+    @SuppressLint("SetTextI18n")
     private void showTermsDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle("Terms and Conditions");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_terms, null);
+        builder.setView(view);
 
-        builder.setMessage(
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView tvTermsText = view.findViewById(R.id.tvDialogTermsText);
+        Button btnAccept = view.findViewById(R.id.btnAcceptTerms);
+        Button btnDecline = view.findViewById(R.id.btnDeclineTerms);
+
+        // Terms text
+        tvTermsText.setText(
                 "Welcome to Tusome.\n\n" +
                         "By creating an account you agree that:\n\n" +
                         "• You will enter accurate personal details.\n" +
@@ -192,22 +207,24 @@ public class SignupActivity extends BaseActivity {
                         "• You will not upload harmful or illegal content.\n" +
                         "• Any misconduct can lead to account suspension.\n" +
                         "• Some activity may be monitored to improve learning.\n\n" +
-                        "Press ACCEPT to continue."
+                        "Tap ACCEPT to continue."
         );
 
-        builder.setPositiveButton("ACCEPT", (dialog, which) -> {
+        btnAccept.setOnClickListener(v -> {
             checkTerms.setEnabled(true);
             checkTerms.setChecked(true);
             checkFormValidity();
+            dialog.dismiss();
         });
 
-        builder.setNegativeButton("DECLINE", (dialog, which) -> {
+        btnDecline.setOnClickListener(v -> {
             checkTerms.setEnabled(false);
             checkTerms.setChecked(false);
             checkFormValidity();
+            dialog.dismiss();
         });
 
-        builder.show();
+        dialog.show();
     }
 
     private void registerUser() {
@@ -229,18 +246,15 @@ public class SignupActivity extends BaseActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user == null) {
-                            Log.e(TAG, "User null after registration");
                             hideProgressAndEnableButton();
                             return;
                         }
 
                         user.sendEmailVerification();
-
                         saveUserToFirestore(user, name, email, role);
 
                     } else {
                         Exception e = task.getException();
-                        Log.e(TAG, "Signup failed: " + (e != null ? e.getMessage() : "Unknown error"));
                         hideProgressAndEnableButton();
                         Toast.makeText(this, "Signup failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }

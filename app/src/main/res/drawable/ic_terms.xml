@@ -1,0 +1,25 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Document shape -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M6,2h9l5,5v13a2,2 0 0 1 -2,2H6a2,2 0 0 1 -2,-2V4a2,2 0 0 1 2,-2zM14,3v4h4" />
+
+    <!-- Text lines -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M8,10h8a1,1 0 0 1 0,2H8a1,1 0 0 1 0,-2z" />
+
+    <path
+        android:fillColor="#000000"
+        android:pathData="M8,14h8a1,1 0 0 1 0,2H8a1,1 0 0 1 0,-2z" />
+
+    <path
+        android:fillColor="#000000"
+        android:pathData="M8,18h5a1,1 0 0 1 0,2H8a1,1 0 0 1 0,-2z" />
+
+</vector>
